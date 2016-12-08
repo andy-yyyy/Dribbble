@@ -33,6 +33,7 @@ public class User {
     private String followersUrl;
     private String followingUrl;
     private String likesUrl;
+    private String projectsUrl;
     private String shotsUrl;
     private String teamsUrl;
     private String createTime;
@@ -136,6 +137,10 @@ public class User {
 
     public String getLikesUrl() {
         return likesUrl;
+    }
+
+    public String getProjectsUrl() {
+        return projectsUrl;
     }
 
     public String getShotsUrl() {
@@ -252,6 +257,10 @@ public class User {
 
     public void setLikesUrl(String likesUrl) {
         this.likesUrl = likesUrl;
+    }
+
+    public void setProjectsUrl(String projectsUrl) {
+        this.projectsUrl = projectsUrl;
     }
 
     public void setShotsUrl(String shotsUrl) {

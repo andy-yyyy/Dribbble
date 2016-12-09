@@ -3,12 +3,16 @@
  */
 package com.andy.baesapp.beans;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by lixn on 2016/12/8.
  */
 
 public class Links {
+    @SerializedName("web")
     private String web;
+    @SerializedName("twitter")
     private String twitter;
 
     public String getWeb() {

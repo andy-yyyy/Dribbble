@@ -15,7 +15,7 @@ import retrofit2.http.Query;
  * Created by lixn on 2016/12/8.
  */
 
-public interface ShotsService {
+public interface ShotsInterface {
 
     @GET("v1/shots")
     Call<GetShotsListResult> getShotsList(@Query("list") String list,

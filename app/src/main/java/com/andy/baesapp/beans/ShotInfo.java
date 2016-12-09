@@ -3,6 +3,8 @@
  */
 package com.andy.baesapp.beans;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -10,30 +12,55 @@ import java.util.List;
  */
 
 public class ShotInfo {
+    @SerializedName("id")
     private int id;
+    @SerializedName("title")
     private String title;
+    @SerializedName("description")
     private String description;
+    @SerializedName("width")
     private int width;
+    @SerializedName("height")
     private int height;
+    @SerializedName("images")
     private Images images;
+    @SerializedName("views_count")
     private int viewsCount;
+    @SerializedName("likes_count")
     private int likesCount;
+    @SerializedName("comments_count")
     private int commentsCount;
+    @SerializedName("attachments_count")
     private int attachmentsCount;
+    @SerializedName("rebounds_count")
     private int reboundsCount;
+    @SerializedName("buckets_count")
     private int bucketsCount;
+    @SerializedName("created_at")
     private String createTime;
-    private String udpateTime;
+    @SerializedName("updated_at")
+    private String updateTime;
+    @SerializedName("html_url")
     private String htmlUrl;
-    private String attachementsUrl;
+    @SerializedName("attachments_url")
+    private String attachmentsUrl;
+    @SerializedName("buckets_url")
     private String bucketsUrl;
+    @SerializedName("comments_url")
     private String commentsUrl;
+    @SerializedName("likes_url")
     private String likes_url;
+    @SerializedName("projects_url")
     private String projectsUrl;
+    @SerializedName("rebounds_url")
     private String reboundsUrl;
+    @SerializedName("animated")
     private boolean animated;
+    @SerializedName("tags")
     private List<String> tags;
+    @SerializedName("user")
     private User user;
+    @SerializedName("team")
     private Team team;
 
     public int getId() {
@@ -88,16 +115,16 @@ public class ShotInfo {
         return createTime;
     }
 
-    public String getUdpateTime() {
-        return udpateTime;
+    public String getUpdateTime() {
+        return updateTime;
     }
 
     public String getHtmlUrl() {
         return htmlUrl;
     }
 
-    public String getAttachementsUrl() {
-        return attachementsUrl;
+    public String getAttachmentsUrl() {
+        return attachmentsUrl;
     }
 
     public String getBucketsUrl() {
@@ -188,16 +215,16 @@ public class ShotInfo {
         this.createTime = createTime;
     }
 
-    public void setUdpateTime(String udpateTime) {
-        this.udpateTime = udpateTime;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
     public void setHtmlUrl(String htmlUrl) {
         this.htmlUrl = htmlUrl;
     }
 
-    public void setAttachementsUrl(String attachementsUrl) {
-        this.attachementsUrl = attachementsUrl;
+    public void setAttachmentsUrl(String attachmentsUrl) {
+        this.attachmentsUrl = attachmentsUrl;
     }
 
     public void setBucketsUrl(String bucketsUrl) {

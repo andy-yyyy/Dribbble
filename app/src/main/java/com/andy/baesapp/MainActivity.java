@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.andy.baesapp.api.ApiConstants;
-import com.andy.baesapp.api.ShotsService;
+import com.andy.baesapp.api.ShotsInterface;
 import com.andy.baesapp.beans.GetShotsListResult;
 import com.andy.baesapp.beans.ShotInfo;
 import com.andy.baesapp.beans.User;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(ApiConstants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        ShotsService api = retrofit.create(ShotsService.class);
+        ShotsInterface api = retrofit.create(ShotsInterface.class);
         Call<GetShotsListResult> call = api.getShotsList("animated", "week", "2016-12-06", "recent");
         call.enqueue(new Callback<GetShotsListResult>() {
             @Override
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(ApiConstants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        ShotsService api = retrofit.create(ShotsService.class);
+        ShotsInterface api = retrofit.create(ShotsInterface.class);
         Call<ShotInfo> call = api.getShotInfo(ApiConstants.CLIENT_ACCESS_TOKEN);
         call.enqueue(new Callback<ShotInfo>() {
             @Override
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(ApiConstants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        ShotsService api = retrofit.create(ShotsService.class);
+        ShotsInterface api = retrofit.create(ShotsInterface.class);
         Call<User> call = api.getuserInfo(ApiConstants.CLIENT_ACCESS_TOKEN);
         call.enqueue(new Callback<User>() {
             @Override

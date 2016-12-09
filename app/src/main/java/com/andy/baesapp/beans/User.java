@@ -3,40 +3,72 @@
  */
 package com.andy.baesapp.beans;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by lixn on 2016/12/8.
  */
 
 public class User {
+    @SerializedName("id")
     private int id;
+    @SerializedName("name")
     private String name;
+    @SerializedName("user_name")
     private String userName;
+    @SerializedName("html_url")
     private String htmlUrl;
+    @SerializedName("avatar_url")
     private String avatarUrl;
+    @SerializedName("bio")
     private String bio;
+    @SerializedName("location")
     private String location;
+    @SerializedName("links")
     private Links links;
+    @SerializedName("buckets_count")
     private int bucketsCount;
+    @SerializedName("comments_received_count")
     private int commentsReceivedCount;
+    @SerializedName("followers_count")
     private int followersCount;
+    @SerializedName("followings_count")
     private int followingsCount;
+    @SerializedName("likes_count")
     private int likesCount;
+    @SerializedName("likes_received_count")
     private int likesReceivedCount;
+    @SerializedName("projects_count")
     private int projectsCount;
+    @SerializedName("rebounds_received_count")
     private int reboundsReceivedCount;
+    @SerializedName("shots_count")
     private int shotsCount;
+    @SerializedName("teams_count")
     private int teamsCount;
+    @SerializedName("can_upload_shot")
     private boolean canUploadShot;
+    @SerializedName("type")
     private String type;
+    @SerializedName("pro")
     private boolean pro;
+    @SerializedName("buckets_url")
     private String bucketsUrl;
+    @SerializedName("followers_url")
     private String followersUrl;
+    @SerializedName("following_url")
     private String followingUrl;
+    @SerializedName("likes_url")
     private String likesUrl;
+    @SerializedName("projects_url")
     private String projectsUrl;
+    @SerializedName("shots_url")
     private String shotsUrl;
+    @SerializedName("teams_url")
     private String teamsUrl;
+    @SerializedName("created_time")
     private String createTime;
+    @SerializedName("updated_time")
     private String updateTime;
 
     public int getId() {

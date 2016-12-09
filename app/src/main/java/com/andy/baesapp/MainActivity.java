@@ -12,10 +12,13 @@ import android.widget.LinearLayout;
 
 import com.andy.baesapp.api.ApiConstants;
 import com.andy.baesapp.api.ShotsInterface;
+import com.andy.baesapp.api.ShotsService;
 import com.andy.baesapp.beans.GetShotsListResult;
 import com.andy.baesapp.beans.ShotInfo;
 import com.andy.baesapp.beans.User;
 import com.andy.baesapp.commom_utils.ToastUtil;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +43,45 @@ public class MainActivity extends AppCompatActivity {
         this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.mFrameContent = (FrameLayout) findViewById(R.id.frame_content);
         initView();
-        getShotInfo();
+
+        ShotsService.getShotById(471756, new Callback<ShotInfo>() {
+            @Override
+            public void onResponse(Call<ShotInfo> call, Response<ShotInfo> response) {
+                ShotInfo info = response.body();
+                Log.d("tag", "hello");
+            }
+
+            @Override
+            public void onFailure(Call<ShotInfo> call, Throwable t) {
+                Log.d("tag", "hello");
+            }
+        });
+        ShotsService.getUserInfo(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                User user = response.body();
+                Log.d("tag", "hello");
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("tag", "hello");
+            }
+        });
+
+        ShotsService.getShotsList("animated", "week", "2016-12-06", "recent", new Callback<List<ShotInfo>>() {
+            @Override
+            public void onResponse(Call<List<ShotInfo>> call, Response<List<ShotInfo>> response) {
+                List<ShotInfo> info = response.body();
+                Log.d("tag", "hello");
+            }
+
+            @Override
+            public void onFailure(Call<List<ShotInfo>> call, Throwable t) {
+                Log.d("tag", "hello");
+            }
+        });
+
     }
 
     private void initView() {
@@ -48,68 +89,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
-    }
-
-    private void getShotsList() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ShotsInterface api = retrofit.create(ShotsInterface.class);
-        Call<GetShotsListResult> call = api.getShotsList("animated", "week", "2016-12-06", "recent");
-        call.enqueue(new Callback<GetShotsListResult>() {
-            @Override
-            public void onResponse(Call<GetShotsListResult> call, Response<GetShotsListResult> response) {
-                ToastUtil.show(response.toString());
-                Log.d("tag", "response:"+response.toString());
-            }
-
-            @Override
-            public void onFailure(Call<GetShotsListResult> call, Throwable t) {
-                ToastUtil.show("error:"+t.toString());
-            }
-        });
-    }
-
-    private void getShotInfo() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ShotsInterface api = retrofit.create(ShotsInterface.class);
-        Call<ShotInfo> call = api.getShotInfo(ApiConstants.CLIENT_ACCESS_TOKEN);
-        call.enqueue(new Callback<ShotInfo>() {
-            @Override
-            public void onResponse(Call<ShotInfo> call, Response<ShotInfo> response) {
-                ShotInfo info = response.body();
-                ToastUtil.show(response.toString());
-            }
-
-            @Override
-            public void onFailure(Call<ShotInfo> call, Throwable t) {
-                ToastUtil.show(t.toString());
-            }
-        });
-    }
-    private void getUserInfo() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ShotsInterface api = retrofit.create(ShotsInterface.class);
-        Call<User> call = api.getuserInfo(ApiConstants.CLIENT_ACCESS_TOKEN);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                ToastUtil.show(response.toString());
-                Log.d("tag", "response:"+response.toString());
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                ToastUtil.show("error:"+t.toString());
             }
         });
     }

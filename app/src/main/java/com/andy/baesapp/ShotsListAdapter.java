@@ -22,13 +22,19 @@ public class ShotsListAdapter extends RecyclerView.Adapter<ShotsListAdapter.Hold
 
     private List<ShotInfo> mData = new ArrayList<>();
     private Fragment mFrag;
+    private OnItemClickListener mListener;
 
     public ShotsListAdapter(Fragment frag) {
         this.mFrag = frag;
     }
+
     public void updateData(List<ShotInfo> data) {
         this.mData = data;
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -43,6 +49,15 @@ public class ShotsListAdapter extends RecyclerView.Adapter<ShotsListAdapter.Hold
         holder.likesCount.setText(getFormatString(R.string.likes_count, info.getLikesCount()));
         holder.commentsCount.setText(getFormatString(R.string.comments_count, info.getCommentsCount()));
         holder.viewsCount.setText(getFormatString(R.string.views_count, info.getViewsCount()));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onItemClick(v);
+                }
+            }
+        });
 
         // 设置最后一个item底部的margin
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
@@ -77,5 +92,9 @@ public class ShotsListAdapter extends RecyclerView.Adapter<ShotsListAdapter.Hold
             commentsCount = (TextView) itemView.findViewById(R.id.comments_count);
             viewsCount = (TextView) itemView.findViewById(R.id.view_count);
         }
+    }
+
+    interface OnItemClickListener {
+        void onItemClick(View v);
     }
 }

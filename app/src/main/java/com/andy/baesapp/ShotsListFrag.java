@@ -32,6 +32,12 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         mPresenter.updateData();
         mRefreshLayout.setProgressViewOffset(false, 0, ScreenUtil.dip2px(getActivity(), 24));
         mRefreshLayout.setRefreshing(true);
+        mAdapter.setOnItemClickListener(new ShotsListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                startActivity(ShotDetailAct.getIntent(getActivity()));
+            }
+        });
     }
 
     @Override

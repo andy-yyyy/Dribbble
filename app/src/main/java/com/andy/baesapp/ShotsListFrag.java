@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.andy.baesapp.beans.ShotInfo;
 import com.andy.baesapp.commom_utils.ScreenUtil;
@@ -22,7 +25,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new ShotsListAdapter();
+        mAdapter = new ShotsListAdapter(this);
         mPresenter = new ShotsListPresenter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);

@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">GitClient</string>
+    <string name="app_name">Dribbble</string>
+    <string name="likes_count">%1$s喜欢</string>
+    <string name="comments_count">%1$s评论</string>
+    <string name="views_count">%1$s浏览</string>
 </resources>
  

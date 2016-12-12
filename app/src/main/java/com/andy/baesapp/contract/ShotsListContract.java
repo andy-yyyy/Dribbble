@@ -13,6 +13,6 @@ public class ShotsListContract {
     }
 
     public interface Presenter {
-        void updateData();
+        void updateData(int page, String list, String timeFrame, String time, String sort);
     }
 }

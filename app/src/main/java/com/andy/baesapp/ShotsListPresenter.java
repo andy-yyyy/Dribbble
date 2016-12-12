@@ -22,8 +22,8 @@ public class ShotsListPresenter implements ShotsListContract.Presenter {
     }
 
     @Override
-    public void updateData() {
-        ShotsService.getShotsList(null, null, "2016-04-23", null, new Callback<List<ShotInfo>>() {
+    public void updateData(int page, String list, String timeFrame, String time, String sort) {
+        ShotsService.getShotsList(page, list, timeFrame, time, sort, new Callback<List<ShotInfo>>() {
             @Override
             public void onResponse(Call<List<ShotInfo>> call, Response<List<ShotInfo>> response) {
                 mView.setRefreshing(false);

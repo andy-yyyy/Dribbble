@@ -1,13 +1,9 @@
 package com.andy.baesapp;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.andy.baesapp.beans.ShotInfo;
 import com.andy.baesapp.commom_utils.ScreenUtil;
@@ -22,6 +18,13 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
 
     private ShotsListAdapter mAdapter;
     private ShotsListContract.Presenter mPresenter;
+
+    private int mPage;
+    private String mListType;
+    private String mTimeFrame;
+    private String mTime;
+    private String mSort;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -29,7 +32,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         mPresenter = new ShotsListPresenter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
-        mPresenter.updateData();
+        mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
         mRefreshLayout.setProgressViewOffset(false, 0, ScreenUtil.dip2px(getActivity(), 24));
         mRefreshLayout.setRefreshing(true);
         mAdapter.setOnItemClickListener(new ShotsListAdapter.OnItemClickListener() {
@@ -48,6 +51,6 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     @Override
     protected void onRefresh() {
         super.onRefresh();
-        mPresenter.updateData();
+        mPresenter.updateData(++mPage, mListType, mTimeFrame, mTime, mSort);
     }
 }

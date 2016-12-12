@@ -21,6 +21,8 @@ public interface ShotsInterface {
     @GET("v1/shots")
     Call<List<ShotInfo>> getShotsList(
             @Query("access_token") String token,
+            @Query("per_page") int pageSize,
+            @Query("page") int page,
             @Query("list") String list,
             @Query("timeframe") String timeFrame,
             @Query("date") String date,

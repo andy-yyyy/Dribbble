@@ -1,13 +1,11 @@
 package com.andy.base;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -22,7 +20,7 @@ public class MainActivity extends BaseActivity {
     private RelativeLayout mFrameContent;
     private LinearLayout mFrameDrawer;
     private ViewPager mViewPager;
-    private ViewPagerIndicator mIndicator;
+    private TabView mTab;
     private Button mCloseBtn;
     private ShotsListFrag mShotsListFrag;
     private List<ShotsListFrag> mFrags;
@@ -38,7 +36,7 @@ public class MainActivity extends BaseActivity {
         this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.mFrameContent = (RelativeLayout) findViewById(R.id.frame_content);
         this.mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        this.mIndicator = (ViewPagerIndicator) findViewById(R.id.indicator);
+        this.mTab = (TabView) findViewById(R.id.tab_view);
         initData();
         initView();
     }
@@ -62,10 +60,10 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mIndicator.addItem("a");
-        mIndicator.addItem("b");
-        mIndicator.addItem("c");
-        mIndicator.setSelection(0);
+        mTab.addItem("Popular");
+        mTab.addItem("Recent");
+        mTab.addItem("Animated");
+        mTab.setSelection(0);
         mViewPager.setAdapter(new ShotsPagerAdapter(getSupportFragmentManager(), mFrags));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -75,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                mIndicator.setSelection(position);
+                mTab.setSelection(position);
             }
 
             @Override

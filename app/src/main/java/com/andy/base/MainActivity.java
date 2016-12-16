@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,6 +23,8 @@ public class MainActivity extends BaseActivity {
     private ViewPager mViewPager;
     private TabView mTab;
     private Button mCloseBtn;
+    private Toolbar mToolBar;
+
     private ShotsListFrag mShotsListFrag;
     private List<ShotsListFrag> mFrags;
 
@@ -30,13 +33,14 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         ToastUtil.setContext(this);
-        getSupportActionBar().setElevation(0);
+        this.mToolBar = (Toolbar) findViewById(R.id.tool_bar);
         this.mCloseBtn = (Button) findViewById(R.id.btn);
         this.mFrameDrawer = (LinearLayout) findViewById(R.id.frame_drawer);
         this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.mFrameContent = (RelativeLayout) findViewById(R.id.frame_content);
         this.mViewPager = (ViewPager) findViewById(R.id.view_pager);
         this.mTab = (TabView) findViewById(R.id.tab_view);
+        setSupportActionBar(mToolBar);
         initData();
         initView();
     }
@@ -57,6 +61,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
+                mToolBar.hideOverflowMenu();
             }
         });
 
@@ -78,7 +83,13 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_SETTLING:
+                        mToolBar.hideOverflowMenu();
+                        mToolBar.collapseActionView();
+                        break;
+                    default:break;
+                }
             }
         });
     }

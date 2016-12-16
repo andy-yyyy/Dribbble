@@ -3,6 +3,7 @@ package com.andy.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.andy.base.beans.ShotInfo;
@@ -39,6 +40,12 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
             @Override
             public void onItemClick(View v) {
                 startActivity(ShotDetailAct.getIntent(getActivity()));
+            }
+        });
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.andy.base;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -31,13 +32,13 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
 
     public ExtensibleListAdapter(Context context) {
         this(context, new ArrayList<D>());
-        this.mHeaderEnabled = isHeaderEnabled();
-        this.mFooterEnabled = isFooterEnabled();
     }
 
     public ExtensibleListAdapter(Context context, List<D> data) {
         this.mContext = context;
         this.mData = data;
+        this.mHeaderEnabled = isHeaderEnabled();
+        this.mFooterEnabled = isFooterEnabled();
     }
 
     protected abstract H onCreateItemHolder(ViewGroup parent);
@@ -51,6 +52,13 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
         return null;
     }
 
+    public View getHeaderView() {
+        return mHeaderView;
+    }
+
+    public View getFooterView() {
+        return mFooterView;
+    }
     public void setHeaderView(View headerView) {
         this.mHeaderView = headerView;
     }
@@ -71,7 +79,7 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
         return mFooterEnabled;
     }
 
-    public void setFooteViewEnabled(boolean enabled) {
+    public void setFooterViewEnabled(boolean enabled) {
         this.mFooterEnabled = enabled;
     }
 
@@ -80,6 +88,12 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
+    public void addData(List<D> data) {
+        if (data != null) {
+            this.mData.addAll(data);
+            notifyDataSetChanged();
+        }
+    }
     public int getDataPosition(int viewPosition) {
         int pos = viewPosition;
         if (isHeaderEnabled()) {
@@ -147,7 +161,8 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
         int viewType = getItemViewType(position);
         switch (viewType) {
             case TYPE_ITEM:
-                onBindItemHolder((H) holder, getDataPosition(position));
+                int dataPosition = getDataPosition(position);
+                onBindItemHolder((H) holder, dataPosition);
                 break;
             case TYPE_HEADER:
                 Log.d(TAG, "onBindViewHolder>>TYPE_HEADER");

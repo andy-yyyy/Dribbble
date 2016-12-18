@@ -19,7 +19,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     private ShotsListAdapter mAdapter;
     private ShotsListContract.Presenter mPresenter;
 
-    private int mPage;
+    private int mPage = 1;
     private String mListType;
     private String mTimeFrame;
     private String mTime;
@@ -30,14 +30,13 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         super.onViewCreated(view, savedInstanceState);
         mAdapter = new ShotsListAdapter(this);
         mPresenter = new ShotsListPresenter(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
         mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
         mRefreshLayout.setProgressViewOffset(false, 0, ScreenUtil.dip2px(getActivity(), 24));
         mRefreshLayout.setRefreshing(true);
-        mAdapter.setOnItemClickListener(new ShotsListAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v) {
+            public void onItemClick(View itemView, int position) {
                 startActivity(ShotDetailAct.getIntent(getActivity()));
             }
         });
@@ -49,8 +48,19 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     }
 
     @Override
+    public void refreshMoreView(List<ShotInfo> moreList) {
+        mAdapter.addData(moreList);
+    }
+
+    @Override
     protected void onRefresh() {
         super.onRefresh();
         mPresenter.updateData(++mPage, mListType, mTimeFrame, mTime, mSort);
+    }
+
+    @Override
+    protected void onLoadMore() {
+        super.onLoadMore();
+        mPresenter.loadMoreData(++mPage, mListType, mTimeFrame, mTime, mSort);
     }
 }

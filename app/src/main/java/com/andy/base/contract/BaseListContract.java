@@ -5,7 +5,8 @@ package com.andy.base.contract;
  */
 public class BaseListContract {
     public interface View {
-        void setRefreshing(boolean refreshing);
+        void showRefreshView(boolean refreshing);
+        void showLoadMoreView(boolean show);
     }
     public interface Presenter {
 

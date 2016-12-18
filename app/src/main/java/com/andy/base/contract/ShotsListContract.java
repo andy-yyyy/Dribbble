@@ -10,9 +10,11 @@ import java.util.List;
 public class ShotsListContract {
     public interface View extends BaseListContract.View {
         void refreshView(List<ShotInfo> infoList);
+        void refreshMoreView(List<ShotInfo> moreList);
     }
 
     public interface Presenter {
         void updateData(int page, String list, String timeFrame, String time, String sort);
+        void loadMoreData(int page, String list, String timeFrame, String time, String sort);
     }
 }

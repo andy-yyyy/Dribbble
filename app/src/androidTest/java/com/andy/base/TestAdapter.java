@@ -11,7 +11,7 @@ import android.widget.TextView;
 /**
  * Created by andy on 2016/12/15.
  */
-public class TestAdapter extends ExtensibleListAdapter<String, TestAdapter.ItemHolder> {
+public class TestAdapter extends BaseListAdapter<String, TestAdapter.ItemHolder> {
 
     public TestAdapter(Context context) {
         super(context);
@@ -24,13 +24,13 @@ public class TestAdapter extends ExtensibleListAdapter<String, TestAdapter.ItemH
 
 //    @Override
 //    protected View onCreateHeader(ViewGroup parent) {
-//        return LayoutInflater.from(mContext).inflate(R.layout.item_test, parent, false);
+//        return LayoutInflater.from(mContext).inflate(R.layout.footer_load_more, parent, false);
 //    }
 //
-//    @Override
-//    protected View onCreateFooter(ViewGroup parent) {
-//        return LayoutInflater.from(mContext).inflate(R.layout.item_test, parent, false);
-//    }
+    @Override
+    protected View onCreateFooter(ViewGroup parent) {
+        return LayoutInflater.from(mContext).inflate(R.layout.footer_load_more, parent, false);
+    }
 
     @Override
     public boolean isFooterEnabled() {

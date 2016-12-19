@@ -48,6 +48,11 @@ public abstract class BaseListAdapter<D, H extends RecyclerView.ViewHolder> exte
         return LayoutInflater.from(mContext).inflate(R.layout.footer_load_more, parent, false);
     }
 
+    @Override
+    public boolean isFooterEnabled() {
+        return true;
+    }
+
     public void setOnItemClickListener(OnItemClickListener itemClickListener) {
         this.mOnItemClickListener = itemClickListener;
     }

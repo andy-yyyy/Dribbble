@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                mToolBar.hideOverflowMenu();
+                startActivity(ShotDetailAct.getIntent(MainActivity.this));
             }
         });
 

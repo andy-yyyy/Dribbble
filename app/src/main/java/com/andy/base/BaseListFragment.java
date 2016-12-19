@@ -8,11 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.andy.base.commom_utils.ToastUtil;
+import com.andy.base.commom_utils.ScreenUtil;
 import com.andy.base.contract.BaseListContract;
 
 /**
@@ -24,8 +21,7 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
     protected LinearLayoutManager mLayoutManager;
-    protected ViewGroup mFooter;
-    protected boolean isLoadingMore = false;
+    protected boolean mIsLoadingMore = false;
 
     @Nullable
     @Override
@@ -41,6 +37,8 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
         super.onViewCreated(view, savedInstanceState);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRefreshLayout.setProgressViewOffset(false, 0, ScreenUtil.dip2px(getActivity(), 24));
+        mRefreshLayout.setRefreshing(true);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -55,7 +53,7 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
                 BaseListAdapter adapter = (BaseListAdapter) mRecyclerView.getAdapter();
                 int itemCount = adapter.getItemCount();
                 int last = manager.findLastVisibleItemPosition();
-                if (!isLoadingMore && last == itemCount - 1) {
+                if (!mIsLoadingMore && last == itemCount - 1) {
                     onLoadMore();
                     showLoadMoreView(true);
                 }
@@ -66,7 +64,7 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
-    }
+}
 
     @Override
     public void showRefreshView(boolean refreshing) {
@@ -78,10 +76,10 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
 
     @Override
     public void showLoadMoreView(boolean show) {
-        isLoadingMore = show;
+        mIsLoadingMore = show;
         RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
-        if (adapter instanceof BaseListAdapter) {
-            ((BaseListAdapter)adapter).setFooterViewEnabled(show);
+        if (adapter instanceof ExtensibleListAdapter) {
+            ((ExtensibleListAdapter) adapter).showFooterView(show);
         }
     }
 

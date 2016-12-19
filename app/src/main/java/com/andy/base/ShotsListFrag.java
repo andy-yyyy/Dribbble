@@ -30,11 +30,9 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAdapter = new ShotsListAdapter(this);
-        mPresenter = new ShotsListPresenter(this);
         mRecyclerView.setAdapter(mAdapter);
+        mPresenter = new ShotsListPresenter(this);
         mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
-        mRefreshLayout.setProgressViewOffset(false, 0, ScreenUtil.dip2px(getActivity(), 24));
-        mRefreshLayout.setRefreshing(true);
         mAdapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {

@@ -1,7 +1,6 @@
 package com.andy.base;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -59,17 +58,6 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
     public View getFooterView() {
         return mFooterView;
     }
-    public void setHeaderView(View headerView) {
-        this.mHeaderView = headerView;
-    }
-
-    public void setFooterView(View footerView) {
-        this.mFooterView = footerView;
-    }
-
-    public void setHeaderViewEnabled(boolean enabled) {
-        this.mHeaderEnabled = enabled;
-    }
 
     public boolean isHeaderEnabled() {
         return mHeaderEnabled;
@@ -79,8 +67,42 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
         return mFooterEnabled;
     }
 
+    public void setHeaderViewEnabled(boolean enabled) {
+        this.mHeaderEnabled = enabled;
+    }
+
     public void setFooterViewEnabled(boolean enabled) {
         this.mFooterEnabled = enabled;
+    }
+
+    public void showHeaderView(boolean show) {
+        if (mHeaderView == null) {
+            return;
+        }
+        if (show) {
+            mHeaderView.setVisibility(View.VISIBLE);
+        } else {
+            mHeaderView.setVisibility(View.GONE);
+        }
+    }
+
+    public void showFooterView(boolean show) {
+        if (mFooterView == null) {
+            return;
+        }
+        if (show) {
+            mFooterView.setVisibility(View.VISIBLE);
+        } else {
+            mFooterView.setVisibility(View.GONE);
+        }
+    }
+
+    public void setHeaderView(View headerView) {
+        this.mHeaderView = headerView;
+    }
+
+    public void setFooterView(View footerView) {
+        this.mFooterView = footerView;
     }
 
     public void updateData(List<D> data) {
@@ -149,6 +171,7 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
                 mFooterView = onCreateFooter(parent);
                 if (mFooterView != null) {
                     holder = new FooterHolder(mFooterView);
+                    mFooterView.setVisibility(View.GONE);
                 }
                 break;
             default:break;

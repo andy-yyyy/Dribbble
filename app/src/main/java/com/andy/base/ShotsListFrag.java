@@ -2,13 +2,12 @@ package com.andy.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.andy.base.beans.ShotInfo;
-import com.andy.base.commom_utils.ScreenUtil;
 import com.andy.base.contract.ShotsListContract;
+import com.andy.base.presenter.ShotsListPresenter;
 
 import java.util.List;
 
@@ -36,6 +35,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         mAdapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
+                ShotInfo shotInfo = mAdapter.getDataAtPosition(position);
                 startActivity(ShotDetailAct.getIntent(getActivity()));
             }
         });

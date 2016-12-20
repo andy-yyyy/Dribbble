@@ -1,4 +1,4 @@
-package com.andy.base;
+package com.andy.base.presenter;
 
 import com.andy.base.api.ShotsService;
 import com.andy.base.beans.ShotInfo;

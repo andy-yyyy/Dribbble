@@ -105,6 +105,17 @@ public abstract class ExtensibleListAdapter<D, H extends RecyclerView.ViewHolder
         this.mFooterView = footerView;
     }
 
+    public List<D> getData() {
+        return mData;
+    }
+
+    public D getDataAtPosition(int position) {
+        if (position <0 || position > mData.size() -1) {
+            return null;
+        }
+        return mData.get(position);
+    }
+
     public void updateData(List<D> data) {
         this.mData = data;
         notifyDataSetChanged();

@@ -20,7 +20,7 @@ public class ShotsService {
         ApiUtil.getApi(CLASS).getShotsList(TOKEN, PAGE_SIZE, page, list, timeFrame, time, sort).enqueue(callback);
     }
 
-    public static void getShotById(int id, Callback<ShotInfo>callback) {
+    public static void getShotInfo(int id, Callback<ShotInfo>callback) {
         ApiUtil.getApi(CLASS).getShotInfo(TOKEN, id).enqueue(callback);
     }
 

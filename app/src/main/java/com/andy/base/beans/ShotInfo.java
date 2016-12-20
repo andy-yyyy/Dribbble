@@ -5,13 +5,14 @@ package com.andy.base.beans;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by lixn on 2016/12/8.
  */
 
-public class ShotInfo {
+public class ShotInfo implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("title")

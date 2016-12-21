@@ -2,6 +2,7 @@ package com.andy.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ public class ShotDetailFrag extends BaseFragment {
         ShotDetailFrag frag = new ShotDetailFrag();
         Bundle bundle = new Bundle();
         bundle.putSerializable(ShotDetailAct.SHOT_INFO, shotInfo);
+        frag.setArguments(bundle);
         return frag;
     }
 
@@ -43,5 +45,6 @@ public class ShotDetailFrag extends BaseFragment {
         if (bundle != null) {
             mShotInfo = (ShotInfo) bundle.getSerializable(ShotDetailAct.SHOT_INFO);
         }
+        Log.d("TAG","shot info>>"+mShotInfo);
     }
 }

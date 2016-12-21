@@ -24,7 +24,7 @@ public class ShotInfo implements Serializable {
     @SerializedName("height")
     private int height;
     @SerializedName("images")
-    private Images images;
+    private ImagesInfo images;
     @SerializedName("views_count")
     private int viewsCount;
     @SerializedName("likes_count")
@@ -60,9 +60,9 @@ public class ShotInfo implements Serializable {
     @SerializedName("tags")
     private List<String> tags;
     @SerializedName("user")
-    private User user;
+    private UserInfo userInfo;
     @SerializedName("team")
-    private Team team;
+    private TeamInfo teamInfo;
 
     public int getId() {
         return id;
@@ -84,7 +84,7 @@ public class ShotInfo implements Serializable {
         return height;
     }
 
-    public Images getImages() {
+    public ImagesInfo getImages() {
         return images;
     }
 
@@ -156,12 +156,12 @@ public class ShotInfo implements Serializable {
         return tags;
     }
 
-    public User getUser() {
-        return user;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public Team getTeam() {
-        return team;
+    public TeamInfo getTeamInfo() {
+        return teamInfo;
     }
 
     public void setId(int id) {
@@ -184,7 +184,7 @@ public class ShotInfo implements Serializable {
         this.height = height;
     }
 
-    public void setImages(Images images) {
+    public void setImages(ImagesInfo images) {
         this.images = images;
     }
 
@@ -256,11 +256,11 @@ public class ShotInfo implements Serializable {
         this.tags = tags;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setTeamInfo(TeamInfo teamInfo) {
+        this.teamInfo = teamInfo;
     }
 }

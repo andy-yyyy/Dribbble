@@ -4,7 +4,7 @@
 package com.andy.base.api;
 
 import com.andy.base.beans.ShotInfo;
-import com.andy.base.beans.User;
+import com.andy.base.beans.UserInfo;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public interface ShotsInterface {
     );
 
     @GET("v1/user")
-    Call<User> getUserInfo(@Query("access_token") String token);
+    Call<UserInfo> getUserInfo(@Query("access_token") String token);
 
     @GET("v1/shots/{shot_id}")
     Call<ShotInfo> getShotInfo(

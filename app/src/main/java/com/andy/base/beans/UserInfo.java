@@ -5,11 +5,13 @@ package com.andy.base.beans;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by lixn on 2016/12/8.
  */
 
-public class User {
+public class UserInfo implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -25,7 +27,7 @@ public class User {
     @SerializedName("location")
     private String location;
     @SerializedName("links")
-    private Links links;
+    private LinksInfo linksInfo;
     @SerializedName("buckets_count")
     private int bucketsCount;
     @SerializedName("comments_received_count")
@@ -99,8 +101,8 @@ public class User {
         return location;
     }
 
-    public Links getLinks() {
-        return links;
+    public LinksInfo getLinksInfo() {
+        return linksInfo;
     }
 
     public int getBucketsCount() {
@@ -219,8 +221,8 @@ public class User {
         this.location = location;
     }
 
-    public void setLinks(Links links) {
-        this.links = links;
+    public void setLinksInfo(LinksInfo linksInfo) {
+        this.linksInfo = linksInfo;
     }
 
     public void setBucketsCount(int bucketsCount) {

@@ -1,7 +1,7 @@
 package com.andy.base.api;
 
 import com.andy.base.beans.ShotInfo;
-import com.andy.base.beans.User;
+import com.andy.base.beans.UserInfo;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class ShotsService {
         ApiUtil.getApi(CLASS).getShotInfo(TOKEN, id).enqueue(callback);
     }
 
-    public static void getUserInfo(Callback<User> callback) {
+    public static void getUserInfo(Callback<UserInfo> callback) {
         ApiUtil.getApi(CLASS).getUserInfo(TOKEN).enqueue(callback);
     }
 

@@ -5,11 +5,13 @@ package com.andy.base.beans;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by lixn on 2016/12/8.
  */
 
-public class Images {
+public class ImagesInfo implements Serializable {
     @SerializedName("hidpi")
     private String hidpi;
     @SerializedName("normal")

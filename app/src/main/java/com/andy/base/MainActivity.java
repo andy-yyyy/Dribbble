@@ -61,7 +61,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(ShotDetailAct.getIntent(MainActivity.this));
             }
         });
 

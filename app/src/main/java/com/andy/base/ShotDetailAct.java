@@ -48,7 +48,7 @@ public class ShotDetailAct extends BaseActivity {
     private void initView() {
         mDetailContainer = (CardView) findViewById(R.id.detail_container);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.detail_container, ShotDetailFrag.getInstance(mShotInfo));
+        ft.replace(R.id.detail_container, ShotDetailFrag.getInstance(mShotInfo)).commitAllowingStateLoss();
     }
 
     private void initData(Bundle savedInstanceState) {

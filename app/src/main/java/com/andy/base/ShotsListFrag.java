@@ -36,7 +36,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
             @Override
             public void onItemClick(View itemView, int position) {
                 ShotInfo shotInfo = mAdapter.getDataAtPosition(position);
-                startActivity(ShotDetailAct.getIntent(getActivity()));
+                startActivity(ShotDetailAct.getIntent(getActivity(), shotInfo));
             }
         });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -60,7 +60,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     @Override
     protected void onRefresh() {
         super.onRefresh();
-        mPresenter.updateData(++mPage, mListType, mTimeFrame, mTime, mSort);
+        mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
     }
 
     @Override

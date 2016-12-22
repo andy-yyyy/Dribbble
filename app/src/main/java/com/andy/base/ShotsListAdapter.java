@@ -64,7 +64,7 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
             updateTime = (TextView) itemView.findViewById(R.id.update_time);
             likesCount = (TextView) itemView.findViewById(R.id.likes_count);
             commentsCount = (TextView) itemView.findViewById(R.id.comments_count);
-            viewsCount = (TextView) itemView.findViewById(R.id.view_count);
+            viewsCount = (TextView) itemView.findViewById(R.id.views_count);
         }
     }
 }

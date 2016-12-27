@@ -9,7 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.andy.base.api.CommentsService;
+import com.andy.base.beans.CommentInfo;
 import com.andy.base.beans.ShotInfo;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by andy on 2016/12/20.
@@ -73,5 +81,21 @@ public class ShotDetailFrag extends BaseFragment {
             mShotInfo = (ShotInfo) bundle.getSerializable(ShotDetailAct.SHOT_INFO);
         }
         Log.d("TAG","shot info>>"+mShotInfo);
+
+        if (mShotInfo != null) {
+            int id = mShotInfo.getId();
+            CommentsService.getCommentsList(1, id, new Callback<List<CommentInfo>>() {
+                @Override
+                public void onResponse(Call<List<CommentInfo>> call, Response<List<CommentInfo>> response) {
+                    List<CommentInfo> list = response.body();
+                    Log.d("TAG", "res: "+response);
+                }
+
+                @Override
+                public void onFailure(Call<List<CommentInfo>> call, Throwable t) {
+                    Log.d("TAG", "res: "+call);
+                }
+            });
+        }
     }
 }

@@ -47,8 +47,12 @@ public class ShotDetailAct extends BaseActivity {
 
     private void initView() {
         mDetailContainer = (CardView) findViewById(R.id.detail_container);
+        mCommentsContainer = (CardView) findViewById(R.id.comments__container);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.detail_container, ShotDetailFrag.getInstance(mShotInfo)).commitAllowingStateLoss();
+        if (mShotInfo != null) {
+            ft.replace(R.id.detail_container, ShotDetailFrag.getInstance(mShotInfo));
+            ft.replace(R.id.comments__container, CommentsListFrag.getInstance(mShotInfo.getId())).commitAllowingStateLoss();
+        }
     }
 
     private void initData(Bundle savedInstanceState) {

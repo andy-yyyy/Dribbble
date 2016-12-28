@@ -8,12 +8,12 @@ import java.util.List;
  * Created by andy on 2016/12/28.
  */
 public class CommentsListContract {
-    interface View {
+    public interface View extends BaseListContract.View {
         void refreshView(List<CommentInfo> infoList);
         void refreshMoreView(List<CommentInfo> moreList);
     }
 
-    interface Presenter {
+    public interface Presenter {
         void updateData(int page, int shotId);
         void loadMoreData(int page, int shotId);
     }

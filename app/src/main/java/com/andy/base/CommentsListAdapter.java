@@ -2,6 +2,7 @@ package com.andy.base;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +34,11 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
         CommentInfo info = mData.get(position);
         UserInfo userInfo = info.getUserInfo();
         if(userInfo != null) {
-            holder.userName.setText(userInfo.getUserName());
+            holder.userName.setText(userInfo.getName());
         }
-        holder.content.setText(info.getBody());
+        if (info.getBody() != null) {
+            holder.content.setText(Html.fromHtml(info.getBody()));
+        }
         holder.likesCount.setText(getFormatString(R.string.likes_count, info.getLikesCount()));
         holder.time.setText(info.getCreateTime());
     }

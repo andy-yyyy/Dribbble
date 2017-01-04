@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/bg_default"
-    android:nestedScrollingEnabled="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            app:layout_scrollFlags="scroll"
+            app:contentScrim="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="220dp">
+            <TextView
+                android:text="banner区域"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                android:background="#987545"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="悬浮的部分"/>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.CardView
-            android:id="@+id/detail_container"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <android.support.v7.widget.CardView
-            android:id="@+id/comments__container"
-            android:layout_marginTop="10dp"
-            android:nestedScrollingEnabled="false"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-</LinearLayout>
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/detail_header"
+                layout="@layout/frag_shot_detail"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

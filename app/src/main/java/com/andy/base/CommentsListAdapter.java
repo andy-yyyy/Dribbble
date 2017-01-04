@@ -1,5 +1,6 @@
 package com.andy.base;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -23,6 +24,10 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
         this.mFrag = frag;
     }
 
+    public CommentsListAdapter(Context context) {
+        super(context);
+    }
+
     @Override
     protected Holder onCreateItemHolder(ViewGroup parent) {
         return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comments_list, parent, false));
@@ -44,7 +49,7 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
     }
 
     private String getFormatString(int resId, Object obj) {
-        return String.format(mFrag.getContext().getResources().getString(resId), obj);
+        return String.format(mContext.getResources().getString(resId), obj);
     }
 
     class Holder extends RecyclerView.ViewHolder {

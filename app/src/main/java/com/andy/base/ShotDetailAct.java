@@ -50,6 +50,7 @@ public class ShotDetailAct extends BaseActivity implements CommentsListContract.
         initView();
         mAdapter = new CommentsListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

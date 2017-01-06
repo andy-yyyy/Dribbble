@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="#667766"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
     <TextView
-        android:text="This is a frag"
-        android:background="#0000ff"
+        android:text="评论"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <include layout="@layout/common_divider"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

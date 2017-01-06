@@ -21,8 +21,6 @@ public class ShotDetailAct extends BaseActivity {
 
     public static final String SHOT_INFO = "shot_info";
 
-    private CardView mDetailContainer;
-    private CardView mCommentsContainer;
     private ShotInfo mShotInfo;
 
     public static Intent getIntent(Context context, ShotInfo shotInfo) {
@@ -46,12 +44,10 @@ public class ShotDetailAct extends BaseActivity {
     }
 
     private void initView() {
-        mDetailContainer = (CardView) findViewById(R.id.detail_container);
-        mCommentsContainer = (CardView) findViewById(R.id.comments__container);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (mShotInfo != null) {
             ft.replace(R.id.detail_container, ShotDetailFrag.getInstance(mShotInfo));
-            ft.replace(R.id.comments__container, CommentsListFrag.getInstance(mShotInfo.getId())).commitAllowingStateLoss();
+            ft.replace(R.id.comments__container, TestCommentsListFrag.getInstance(mShotInfo.getId())).commitAllowingStateLoss();
         }
     }
 
@@ -61,13 +57,5 @@ public class ShotDetailAct extends BaseActivity {
         } else {
             mShotInfo = (ShotInfo) savedInstanceState.get(SHOT_INFO);
         }
-    }
-
-    List<String> getData() {
-        List<String> data = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            data.add("item"+(i+1));
-        }
-        return data;
     }
 }

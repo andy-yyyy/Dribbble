@@ -24,6 +24,7 @@ public class UserInfoAct extends BaseActivity {
     private ImageView mAvatar;
     private TextView mName;
     private Button mFollow;
+    private LinearButton mFollowerCount, mFollowingsCount, mLikesCount;
     public static Intent getIntent(Context context, UserInfo userInfo) {
         Intent intent = new Intent(context, UserInfoAct.class);
         intent.putExtra(TAG_USER_INFO, userInfo);
@@ -48,10 +49,16 @@ public class UserInfoAct extends BaseActivity {
         mAvatar = (ImageView) findViewById(R.id.avatar);
         mName = (TextView) findViewById(R.id.name);
         mFollow = (Button) findViewById(R.id.follow);
+        mFollowerCount = (LinearButton) findViewById(R.id.followers_count);
+        mFollowingsCount = (LinearButton) findViewById(R.id.followings_count);
+        mLikesCount = (LinearButton) findViewById(R.id.likes_count);
 
         if (mUserInfo != null) {
             Glide.with(this).load(mUserInfo.getAvatarUrl()).into(mAvatar);
             mName.setText(mUserInfo.getName());
+            mFollowerCount.update(mUserInfo.getFollowersCount() + "", "Followers");
+            mFollowingsCount.update(mUserInfo.getFollowingsCount() + "", "Followings");
+            mLikesCount.update(mUserInfo.getLikesCount() + "", "Likes");
             mFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

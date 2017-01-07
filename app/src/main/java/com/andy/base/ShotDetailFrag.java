@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andy.base.api.CommentsService;
 import com.andy.base.beans.CommentInfo;
 import com.andy.base.beans.ShotInfo;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class ShotDetailFrag extends BaseFragment {
     }
 
     private void initView(View view) {
+        ImageView image = (ImageView) view.findViewById(R.id.img);
         TextView updateTime = (TextView) view.findViewById(R.id.update_time);
         TextView likesCount = (TextView) view.findViewById(R.id.likes_count);
         TextView commentsCount = (TextView) view.findViewById(R.id.comments_count);
@@ -56,18 +59,32 @@ public class ShotDetailFrag extends BaseFragment {
         TextView description = (TextView) view.findViewById(R.id.description);
         TextView name = (TextView) view.findViewById(R.id.name);
         TextView userName = (TextView) view.findViewById(R.id.user_name);
+        ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mShotInfo != null) {
+                    startActivity(UserInfoAct.getIntent(getContext(), mShotInfo.getUserInfo()));
+                }
+            }
+        });
 
         if (mShotInfo != null) {
+            Glide.with(getContext()).load(mShotInfo.getImages().getHidp()).into(image);
             updateTime.setText(mShotInfo.getUpdateTime());
             likesCount.setText(getFormatString(R.string.likes_count, mShotInfo.getLikesCount()));
             commentsCount.setText(getFormatString(R.string.comments_count, mShotInfo.getCommentsCount()));
             viewsCount.setText(getFormatString(R.string.views_count, mShotInfo.getViewsCount()));
             title.setText(mShotInfo.getTitle());
+            name.setText(mShotInfo.getUserInfo().getName());
+            userName.setText(mShotInfo.getUserInfo().getUserName());
             if (mShotInfo.getDescription() != null) {
                 description.setText(Html.fromHtml(mShotInfo.getDescription()));
             }
-            name.setText(mShotInfo.getUserInfo().getName());
-            userName.setText(mShotInfo.getUserInfo().getUserName());
+            if (mShotInfo.getUserInfo() != null) {
+                Glide.with(getContext()).load(mShotInfo.getUserInfo().getAvatarUrl()).into(avatar);
+            }
         }
     }
 

@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.andy.base.ShotDetailAct"/>
+        <activity android:name=".UserInfoAct"/>
         <activity android:name=".TestAct"/>
     </application>
 

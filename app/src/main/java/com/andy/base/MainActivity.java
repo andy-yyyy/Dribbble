@@ -1,5 +1,6 @@
 package com.andy.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -61,6 +62,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(MainActivity.this, TestAct.class));
             }
         });
 

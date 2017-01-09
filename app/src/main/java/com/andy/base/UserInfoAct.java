@@ -5,13 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.andy.base.api.TokenService;
+import com.andy.base.api.UserInfoService;
+import com.andy.base.beans.Token;
 import com.andy.base.beans.UserInfo;
 import com.bumptech.glide.Glide;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by andy on 2017/1/7.
@@ -63,6 +71,30 @@ public class UserInfoAct extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     // TODO: 2017/1/7 follow action
+                    int id = mUserInfo.getId();
+                    TokenService.getToken(new Callback<Token>() {
+                        @Override
+                        public void onResponse(Call<Token> call, Response<Token> response) {
+                            Log.d("TAG", "msg:"+response.message());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Token> call, Throwable t) {
+                            Log.d("TAG", "msg:"+t.toString());
+                        }
+                    });
+                    UserInfoService.follow(id, new Callback<Object>() {
+                        @Override
+                        public void onResponse(Call<Object> call, Response<Object> response) {
+                            String msg = response.message();
+                            Log.d("TAG", response.message());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable t) {
+
+                        }
+                    });
                 }
             });
         }

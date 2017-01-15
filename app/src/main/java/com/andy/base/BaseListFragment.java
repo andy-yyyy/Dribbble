@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.andy.base.commom_utils.ScreenUtil;
+import com.andy.base.common_utils.ScreenUtil;
 import com.andy.base.contract.BaseListContract;
 
 /**

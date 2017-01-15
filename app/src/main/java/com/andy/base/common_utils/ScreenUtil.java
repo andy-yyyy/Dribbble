@@ -1,4 +1,4 @@
-package com.andy.base.commom_utils;
+package com.andy.base.common_utils;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

@@ -5,7 +5,7 @@ package com.andy.base.presenter;
 
 import com.andy.base.api.CommentsService;
 import com.andy.base.beans.CommentInfo;
-import com.andy.base.commom_utils.ToastUtil;
+import com.andy.base.common_utils.ToastUtil;
 import com.andy.base.contract.CommentsListContract;
 
 import java.util.List;

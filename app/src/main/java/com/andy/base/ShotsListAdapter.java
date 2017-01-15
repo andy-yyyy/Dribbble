@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andy.base.beans.ShotInfo;
-import com.andy.base.commom_utils.ScreenUtil;
+import com.andy.base.common_utils.ScreenUtil;
 import com.bumptech.glide.Glide;
 
 /**

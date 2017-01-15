@@ -2,7 +2,7 @@ package com.andy.base.presenter;
 
 import com.andy.base.api.ShotsService;
 import com.andy.base.beans.ShotInfo;
-import com.andy.base.commom_utils.ToastUtil;
+import com.andy.base.common_utils.ToastUtil;
 import com.andy.base.contract.ShotsListContract;
 
 import java.util.List;

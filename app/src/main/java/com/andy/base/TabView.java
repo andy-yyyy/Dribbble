@@ -4,12 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.andy.base.commom_utils.ScreenUtil;
+import com.andy.base.common_utils.ScreenUtil;
 
 /**
  * Created by andy on 2016/12/14.

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.andy.base.api.ApiUtil;
 import com.andy.base.api.UserInfoService;
 import com.andy.base.beans.UserInfo;
 import com.bumptech.glide.Glide;
@@ -70,18 +71,20 @@ public class UserInfoAct extends BaseActivity {
                 public void onClick(View v) {
                     // TODO: 2017/1/7 follow action
                     int id = mUserInfo.getId();
-                    UserInfoService.follow(id, new Callback<Object>() {
-                        @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
-                            String msg = response.message();
-                            Log.d("TAG", response.message());
-                        }
+                    if (ApiUtil.hasToken()) {
+                        UserInfoService.follow(id, new Callback<Object>() {
+                            @Override
+                            public void onResponse(Call<Object> call, Response<Object> response) {
+                                String msg = response.message();
+                                Log.d("TAG", response.message());
+                            }
 
-                        @Override
-                        public void onFailure(Call<Object> call, Throwable t) {
-                            Log.d("TAG", t.toString());
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<Object> call, Throwable t) {
+                                Log.d("TAG", t.toString());
+                            }
+                        });
+                    }
                 }
             });
         }

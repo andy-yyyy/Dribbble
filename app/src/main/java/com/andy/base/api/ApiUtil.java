@@ -29,6 +29,10 @@ public class ApiUtil {
         return retrofit.create(cls);
     }
 
+    public static boolean hasToken() {
+        return !TextUtils.isEmpty(getToken());
+    }
+
     public static String getToken() {
         if (!TextUtils.isEmpty(mToken)) {
             return mToken;

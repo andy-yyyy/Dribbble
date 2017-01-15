@@ -8,10 +8,10 @@ import retrofit2.Callback;
 public class UserInfoService {
 
     private static final Class<UserInfoInterface> CLASS = UserInfoInterface.class;
-    private static final String TOKEN = ApiConstants.CLIENT_ACCESS_TOKEN;
+    private static final String TOKEN = ApiUtil.getToken();
 
     public static void follow(int userId, Callback<Object> callback) {
-        ApiUtil.getApi(CLASS).follow(TOKEN, userId).enqueue(callback);
+        ApiUtil.getApi(CLASS).follow(userId, ApiUtil.getToken()).enqueue(callback);
     }
 
 }

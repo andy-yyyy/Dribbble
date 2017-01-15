@@ -25,6 +25,6 @@ public class TokenService {
     }
 
     public static void getToken(Callback<Token> callback) {
-        ApiUtil.getApi(CLASS).getToken(CLIENT_ID, CIENT_SECRET, CODE, REDIRECT_URI).enqueue(callback);
+//        ApiUtil.getApi(CLASS).getToken(CLIENT_ID, CIENT_SECRET, CODE, REDIRECT_URI).enqueue(callback);
     }
 }

@@ -39,7 +39,7 @@
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/btn"
-            android:text="关闭"
+            android:text="Login in"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

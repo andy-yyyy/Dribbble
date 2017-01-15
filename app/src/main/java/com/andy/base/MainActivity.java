@@ -23,7 +23,7 @@ public class MainActivity extends BaseActivity {
     private LinearLayout mFrameDrawer;
     private ViewPager mViewPager;
     private TabView mTab;
-    private Button mCloseBtn;
+    private Button mLoginBtn;
     private Toolbar mToolBar;
 
     private ShotsListFrag mShotsListFrag;
@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.act_main);
         ToastUtil.setContext(this);
         this.mToolBar = (Toolbar) findViewById(R.id.tool_bar);
-        this.mCloseBtn = (Button) findViewById(R.id.btn);
+        this.mLoginBtn = (Button) findViewById(R.id.btn);
         this.mFrameDrawer = (LinearLayout) findViewById(R.id.frame_drawer);
         this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.mFrameContent = (RelativeLayout) findViewById(R.id.frame_content);
@@ -58,11 +58,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
-        mCloseBtn.setOnClickListener(new View.OnClickListener() {
+        mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(new Intent(MainActivity.this, TestAct.class));
+                startActivity(new Intent(MainActivity.this, LoginAct.class));
             }
         });
 

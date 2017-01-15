@@ -3,6 +3,8 @@
  */
 package com.andy.base.api;
 
+import java.security.PublicKey;
+
 /**
  * Created by lixn on 2016/12/8.
  */
@@ -13,4 +15,10 @@ public class ApiConstants {
     public static final String CLIENT_ACCESS_TOKEN = "114b671b65a172a7c5ae5783b50ebf70bc96daba1837b24b10ec9ac5f8a6264d";
 
     public static final String BASE_URL = "https://api.dribbble.com/";
+    public static final String AUTHORIZE_URL = "https://dribbble.com/oauth/authorize";
+    public static final String USER_ACCESS_TOKEN_URL = "https://dribbble.com/oauth/token";
+
+    public static final String REDIRECT_URI = "app://base.andy.com";
+    public static final String SCOPE = "public write";
+    public static final String STATE = "kfetjkl4j5jkfjk34jk";
 }

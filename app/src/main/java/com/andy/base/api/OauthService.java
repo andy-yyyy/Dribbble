@@ -10,9 +10,9 @@ import retrofit2.Callback;
 /**
  * Created by andy on 2017/1/9.
  */
-public class TokenService {
+public class OauthService {
 
-    private static final Class<TokenInterface> CLASS = TokenInterface.class;
+    private static final Class<OauthInterface> CLASS = OauthInterface.class;
     private static final String TOKEN = ApiConstants.CLIENT_ACCESS_TOKEN;
     private static final String CLIENT_ID = ApiConstants.CLIENT_ID;
     private static final String CLIENT_SECRET = ApiConstants.CLIENT_SECRET;

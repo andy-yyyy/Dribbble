@@ -11,9 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.andy.base.api.TokenService;
 import com.andy.base.api.UserInfoService;
-import com.andy.base.beans.Token;
 import com.andy.base.beans.UserInfo;
 import com.bumptech.glide.Glide;
 

@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.andy.base.api.ApiConstants;
-import com.andy.base.api.TokenService;
+import com.andy.base.api.OauthService;
 import com.andy.base.beans.Token;
 
 import retrofit2.Call;
@@ -52,7 +52,7 @@ public class LoginAct extends BaseActivity {
         super.onNewIntent(intent);
         Uri uri = intent.getData();
         String code = uri.getQueryParameter("code");
-        TokenService.getUserToken(code, new Callback<Token>() {
+        OauthService.getUserToken(code, new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {

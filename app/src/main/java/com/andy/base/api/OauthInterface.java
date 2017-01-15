@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 /**
  * Created by andy on 2017/1/9.
  */
-public interface TokenInterface {
+public interface OauthInterface {
 
     @GET("https://dribbble.com/oauth/authorize")
     Call<Object> getAuth(

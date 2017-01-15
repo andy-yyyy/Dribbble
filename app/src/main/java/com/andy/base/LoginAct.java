@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.andy.base.api.ApiConstants;
+import com.andy.base.api.ApiUtil;
 import com.andy.base.api.OauthService;
 import com.andy.base.beans.Token;
+import com.andy.base.common_utils.ToastUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,18 +59,20 @@ public class LoginAct extends BaseActivity {
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
                     Token t = response.body();
-                    token.setText(t.getAccessToken());
                     // 存储token
-                    SharedPreferences sp = getPreferences(MODE_PRIVATE);
-                    sp.edit().putString(KEY_USER_ACCESS_TOKEN, t.getAccessToken()).apply();
-                    finish();
+                    if (t != null) {
+                        token.setText(t.getAccessToken());
+                        ApiUtil.saveTokenToSp(t.getAccessToken());
+                        finish();
+                    } else {
+                        ToastUtil.show("get token failed");
+                    }
                 }
-                Log.d("tag", "error->"+ response.toString());
             }
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                Log.d("tag", "");
+                ToastUtil.show(t.getMessage());
             }
         });
         Log.d("TAG","code:"+code);

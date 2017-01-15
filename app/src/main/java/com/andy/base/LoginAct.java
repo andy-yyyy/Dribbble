@@ -1,5 +1,6 @@
 package com.andy.base;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -27,6 +28,10 @@ public class LoginAct extends BaseActivity {
 
     public static final String KEY_USER_ACCESS_TOKEN = "key_access_token";
     private TextView token;
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, LoginAct.class);
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

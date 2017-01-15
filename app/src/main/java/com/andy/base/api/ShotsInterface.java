@@ -29,9 +29,6 @@ public interface ShotsInterface {
             @Query("sort") String sort
     );
 
-    @GET("v1/user")
-    Call<UserInfo> getUserInfo(@Query("access_token") String token);
-
     @GET("v1/shots/{shot_id}")
     Call<ShotInfo> getShotInfo(
             @Query("access_token") String token,

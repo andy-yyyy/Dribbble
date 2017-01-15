@@ -8,13 +8,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.andy.base.api.ApiUtil;
+import com.andy.base.api.UserInfoService;
+import com.andy.base.beans.UserInfo;
 import com.andy.base.common_utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
@@ -25,6 +33,7 @@ public class MainActivity extends BaseActivity {
     private TabView mTab;
     private Button mLoginBtn;
     private Toolbar mToolBar;
+    private ImageView mImageView;
 
     private ShotsListFrag mShotsListFrag;
     private List<ShotsListFrag> mFrags;
@@ -41,6 +50,7 @@ public class MainActivity extends BaseActivity {
         this.mFrameContent = (RelativeLayout) findViewById(R.id.frame_content);
         this.mViewPager = (ViewPager) findViewById(R.id.view_pager);
         this.mTab = (TabView) findViewById(R.id.tab_view);
+        this.mImageView = (ImageView) findViewById(R.id.iv);
         setSupportActionBar(mToolBar);
         initData();
         initView();
@@ -63,6 +73,29 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 startActivity(new Intent(MainActivity.this, LoginAct.class));
+            }
+        });
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ApiUtil.hasToken()) {
+                    UserInfoService.getUserInfo(new Callback<UserInfo>() {
+                        @Override
+                        public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
+                            if (response.isSuccessful()) {
+                                UserInfo userInfo = response.body();
+                                startActivity(UserInfoAct.getIntent(MainActivity.this, userInfo));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserInfo> call, Throwable t) {
+                            ToastUtil.show(t.getMessage());
+                        }
+                    });
+                } else {
+                    startActivity(LoginAct.getIntent(MainActivity.this));
+                }
             }
         });
 

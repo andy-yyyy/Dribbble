@@ -28,18 +28,20 @@
     <LinearLayout
         android:id="@+id/frame_drawer"
         android:orientation="vertical"
-        android:background="#ff0000"
+        android:background="@color/bg_default"
         android:layout_gravity="start"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <ImageView
             android:id="@+id/iv"
             android:src="@mipmap/mm"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="240dp" />
         <Button
             android:id="@+id/btn"
             android:text="Login in"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

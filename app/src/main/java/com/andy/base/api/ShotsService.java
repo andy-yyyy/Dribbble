@@ -24,8 +24,5 @@ public class ShotsService {
         ApiUtil.getApi(CLASS).getShotInfo(TOKEN, id).enqueue(callback);
     }
 
-    public static void getUserInfo(Callback<UserInfo> callback) {
-        ApiUtil.getApi(CLASS).getUserInfo(TOKEN).enqueue(callback);
-    }
 
 }

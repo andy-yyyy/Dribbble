@@ -10,7 +10,7 @@ public class ApiUtil {
 
     public static <T> T getApi(Class<T> cls) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.BASE_URL)
+                .baseUrl(ApiConstants.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit.create(cls);

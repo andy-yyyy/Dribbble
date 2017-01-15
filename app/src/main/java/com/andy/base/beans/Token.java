@@ -1,12 +1,19 @@
 package com.andy.base.beans;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by andy on 2017/1/10.
  */
 public class Token {
+    @SerializedName("access_token")
     private String accessToken;
+    @SerializedName("token_type")
     private String tokenType;
+    @SerializedName("scope")
     private String scope;
+    @SerializedName("created_at")
+    private long createTime;
 
     public String getAccessToken() {
         return accessToken;
@@ -26,6 +33,14 @@ public class Token {
 
     public String getScope() {
         return scope;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
     }
 
     public void setScope(String scope) {

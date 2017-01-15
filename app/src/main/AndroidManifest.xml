@@ -26,7 +26,14 @@
             </intent-filter>
         </activity>
         <activity android:name="com.andy.base.ShotDetailAct"/>
-        <activity android:name=".UserInfoAct"/>
+        <activity android:name=".UserInfoAct">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="base.andy.com" android:scheme="aa"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".TestAct"/>
     </application>
 

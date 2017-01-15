@@ -1,16 +1,13 @@
 package com.andy.base.api;
 
 import com.andy.base.beans.Token;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
+import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -27,11 +24,9 @@ public interface TokenInterface {
             @Query("state") String state
     );
 
-    @Headers({
-            "Content-type:application/json"
-    })
+    @FormUrlEncoded
     @POST("https://dribbble.com/oauth/token")
     Call<Token> getToken(
-            @Body JSONObject data
+            @FieldMap()Map<String, String> params
             );
 }

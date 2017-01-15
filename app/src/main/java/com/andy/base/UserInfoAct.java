@@ -72,17 +72,6 @@ public class UserInfoAct extends BaseActivity {
                 public void onClick(View v) {
                     // TODO: 2017/1/7 follow action
                     int id = mUserInfo.getId();
-                    TokenService.getToken(new Callback<Token>() {
-                        @Override
-                        public void onResponse(Call<Token> call, Response<Token> response) {
-                            Log.d("TAG", "msg:"+response.message());
-                        }
-
-                        @Override
-                        public void onFailure(Call<Token> call, Throwable t) {
-                            Log.d("TAG", "msg:"+t.toString());
-                        }
-                    });
                     UserInfoService.follow(id, new Callback<Object>() {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
@@ -92,7 +81,7 @@ public class UserInfoAct extends BaseActivity {
 
                         @Override
                         public void onFailure(Call<Object> call, Throwable t) {
-
+                            Log.d("TAG", t.toString());
                         }
                     });
                 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.andy.base.api.ApiUtil;
 import com.andy.base.api.UserInfoService;
 import com.andy.base.beans.UserInfo;
+import com.andy.base.common_utils.ToastUtil;
 import com.bumptech.glide.Glide;
 
 import retrofit2.Call;
@@ -26,12 +27,24 @@ import retrofit2.Response;
 public class UserInfoAct extends BaseActivity {
 
     public static final String TAG_USER_INFO = "user_info";
+    public static final String TAG_USER_ID = "user_id";
     private UserInfo mUserInfo;
+    private String mUserId;
 
     private ImageView mAvatar;
     private TextView mName;
     private Button mFollow;
     private LinearButton mFollowerCount, mFollowingsCount, mLikesCount;
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, UserInfoAct.class);
+    }
+    public static Intent getIntent(Context context, String userId) {
+        Intent intent = new Intent(context, UserInfoAct.class);
+        intent.putExtra(TAG_USER_ID, userId);
+        return intent;
+    }
+
     public static Intent getIntent(Context context, UserInfo userInfo) {
         Intent intent = new Intent(context, UserInfoAct.class);
         intent.putExtra(TAG_USER_INFO, userInfo);
@@ -59,7 +72,10 @@ public class UserInfoAct extends BaseActivity {
         mFollowerCount = (LinearButton) findViewById(R.id.followers_count);
         mFollowingsCount = (LinearButton) findViewById(R.id.followings_count);
         mLikesCount = (LinearButton) findViewById(R.id.likes_count);
+        updateUseInfo();
+    }
 
+    private void updateUseInfo() {
         if (mUserInfo != null) {
             Glide.with(this).load(mUserInfo.getAvatarUrl()).into(mAvatar);
             mName.setText(mUserInfo.getName());
@@ -75,6 +91,7 @@ public class UserInfoAct extends BaseActivity {
                         UserInfoService.follow(id, new Callback<Object>() {
                             @Override
                             public void onResponse(Call<Object> call, Response<Object> response) {
+                                ToastUtil.show("关注成功！");
                                 String msg = response.message();
                                 Log.d("TAG", response.message());
                             }
@@ -93,8 +110,27 @@ public class UserInfoAct extends BaseActivity {
     private void initData(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             mUserInfo = (UserInfo) getIntent().getSerializableExtra(TAG_USER_INFO);
+            mUserId = (String) getIntent().getSerializableExtra(TAG_USER_ID);
         } else {
             mUserInfo = (UserInfo) savedInstanceState.getSerializable(TAG_USER_INFO);
+            mUserId = (String) savedInstanceState.getSerializable(TAG_USER_ID);
+        }
+
+        if (ApiUtil.hasToken()) {
+            UserInfoService.getUserInfo(new Callback<UserInfo>() {
+                @Override
+                public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
+                    if (response.isSuccessful()) {
+                        mUserInfo = response.body();
+                        updateUseInfo();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserInfo> call, Throwable t) {
+                    ToastUtil.show(t.getMessage());
+                }
+            });
         }
     }
 }

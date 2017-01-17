@@ -93,6 +93,7 @@ public class MainActivity extends BaseActivity {
                             ToastUtil.show(t.getMessage());
                         }
                     });
+                    startActivity(UserInfoAct.getIntent(MainActivity.this));
                 } else {
                     startActivity(LoginAct.getIntent(MainActivity.this));
                 }

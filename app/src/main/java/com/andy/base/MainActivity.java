@@ -78,22 +78,9 @@ public class MainActivity extends BaseActivity {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
                 if (ApiUtil.hasToken()) {
-                    UserInfoService.getUserInfo(new Callback<UserInfo>() {
-                        @Override
-                        public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
-                            if (response.isSuccessful()) {
-                                UserInfo userInfo = response.body();
-                                startActivity(UserInfoAct.getIntent(MainActivity.this, userInfo));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserInfo> call, Throwable t) {
-                            ToastUtil.show(t.getMessage());
-                        }
-                    });
-                    startActivity(UserInfoAct.getIntent(MainActivity.this));
+                    startActivity(UserInfoAct.getIntent(MainActivity.this, true));
                 } else {
                     startActivity(LoginAct.getIntent(MainActivity.this));
                 }

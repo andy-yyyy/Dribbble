@@ -27,9 +27,9 @@ import retrofit2.Response;
 public class UserInfoAct extends BaseActivity {
 
     public static final String TAG_USER_INFO = "user_info";
-    public static final String TAG_USER_ID = "user_id";
+    public static final String TAG_IS_CURRENT_USER = "is_current_user";
     private UserInfo mUserInfo;
-    private String mUserId;
+    private boolean mIsCurrentUser;
 
     private ImageView mAvatar;
     private TextView mName;
@@ -39,9 +39,9 @@ public class UserInfoAct extends BaseActivity {
     public static Intent getIntent(Context context) {
         return new Intent(context, UserInfoAct.class);
     }
-    public static Intent getIntent(Context context, String userId) {
+    public static Intent getIntent(Context context, boolean isCurrent) {
         Intent intent = new Intent(context, UserInfoAct.class);
-        intent.putExtra(TAG_USER_ID, userId);
+        intent.putExtra(TAG_IS_CURRENT_USER, isCurrent);
         return intent;
     }
 
@@ -108,15 +108,19 @@ public class UserInfoAct extends BaseActivity {
     }
 
     private void initData(Bundle savedInstanceState) {
+        Object isCurrentUser;
         if (savedInstanceState == null) {
             mUserInfo = (UserInfo) getIntent().getSerializableExtra(TAG_USER_INFO);
-            mUserId = (String) getIntent().getSerializableExtra(TAG_USER_ID);
+            isCurrentUser =  getIntent().getSerializableExtra(TAG_IS_CURRENT_USER);
         } else {
             mUserInfo = (UserInfo) savedInstanceState.getSerializable(TAG_USER_INFO);
-            mUserId = (String) savedInstanceState.getSerializable(TAG_USER_ID);
+            isCurrentUser = savedInstanceState.getSerializable(TAG_IS_CURRENT_USER);
+        }
+        if (isCurrentUser instanceof Boolean) {
+            mIsCurrentUser = (boolean) isCurrentUser;
         }
 
-        if (ApiUtil.hasToken()) {
+        if (mIsCurrentUser && ApiUtil.hasToken()) {
             UserInfoService.getUserInfo(new Callback<UserInfo>() {
                 @Override
                 public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {

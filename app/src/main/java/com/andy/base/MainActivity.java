@@ -13,16 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.andy.base.api.ApiUtil;
-import com.andy.base.api.UserInfoService;
-import com.andy.base.beans.UserInfo;
 import com.andy.base.common_utils.ToastUtil;
+import com.andy.base.view.TabView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 

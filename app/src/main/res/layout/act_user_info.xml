@@ -54,19 +54,19 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <com.andy.base.LinearButton
+            <com.andy.base.view.LinearButton
                 android:id="@+id/followers_count"
                 android:paddingLeft="20dp"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
-            <com.andy.base.LinearButton
+            <com.andy.base.view.LinearButton
                 android:id="@+id/followings_count"
                 android:paddingLeft="20dp"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
-            <com.andy.base.LinearButton
+            <com.andy.base.view.LinearButton
                 android:id="@+id/likes_count"
                 android:paddingLeft="20dp"
                 android:layout_weight="1"

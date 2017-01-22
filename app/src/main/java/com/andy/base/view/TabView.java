@@ -1,4 +1,7 @@
-package com.andy.base;
+/*
+ * Copyright (C) 2017 Facishare Technology Co., Ltd. All Rights Reserved.
+ */
+package com.andy.base.view;
 
 import android.content.Context;
 import android.graphics.Color;

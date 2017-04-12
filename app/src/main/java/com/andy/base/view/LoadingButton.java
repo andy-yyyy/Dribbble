@@ -61,7 +61,7 @@ public class LoadingButton extends RelativeLayout {
     public void toggle(boolean toggleOn, String title) {
         setText(title);
         if (toggleOn) {
-            tv.setTextColor(getResources().getColor(R.color.colorAccent));
+            tv.setTextColor(getResources().getColor(R.color.white));
             setBackground(R.drawable.bg_shape_checked);
         } else {
             tv.setTextColor(getResources().getColor(R.color.deep_gray));

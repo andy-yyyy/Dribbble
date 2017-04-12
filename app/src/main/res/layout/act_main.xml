@@ -30,7 +30,7 @@
         android:orientation="vertical"
         android:background="@color/bg_default"
         android:layout_gravity="start"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
             android:id="@+id/iv"
@@ -39,10 +39,15 @@
             android:layout_width="match_parent"
             android:layout_height="240dp" />
         <Button
-            android:id="@+id/btn"
+            android:id="@+id/tv"
             android:text="Login in"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <com.andy.base.view.LoadingButton
+            android:id="@+id/loading_btn"
+            android:layout_margin="10dp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

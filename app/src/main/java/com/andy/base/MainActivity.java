@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.andy.base.api.ApiUtil;
 import com.andy.base.common_utils.ToastUtil;
+import com.andy.base.view.LoadingButton;
 import com.andy.base.view.TabView;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class MainActivity extends BaseActivity {
 
     private ShotsListFrag mShotsListFrag;
     private List<ShotsListFrag> mFrags;
+    private boolean mChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.act_main);
         ToastUtil.setContext(this);
         this.mToolBar = (Toolbar) findViewById(R.id.tool_bar);
-        this.mLoginBtn = (Button) findViewById(R.id.btn);
+        this.mLoginBtn = (Button) findViewById(R.id.tv);
         this.mFrameDrawer = (LinearLayout) findViewById(R.id.frame_drawer);
         this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.mFrameContent = (RelativeLayout) findViewById(R.id.frame_content);
@@ -49,6 +51,28 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(mToolBar);
         initData();
         initView();
+
+        final LoadingButton btn = (LoadingButton) findViewById(R.id.loading_btn);
+        btn.setClickable(true);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn.showLoading(true);
+                btn.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        btn.showLoading(false);
+                        if (mChecked) {
+                            mChecked = false;
+                            btn.toggle(false, "关注");
+                        } else {
+                            mChecked = true;
+                            btn.toggle(true, "已关注");
+                        }
+                    }
+                }, 2000);
+            }
+        });
     }
 
     private void initData() {

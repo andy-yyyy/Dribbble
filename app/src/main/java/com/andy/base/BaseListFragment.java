@@ -21,7 +21,7 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
     protected LinearLayoutManager mLayoutManager;
-    protected boolean mIsLoadingMore = false;
+    protected boolean mIsLoadingMore = true;
 
     @Nullable
     @Override

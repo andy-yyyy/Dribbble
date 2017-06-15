@@ -21,7 +21,7 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
     protected LinearLayoutManager mLayoutManager;
-    protected boolean mIsLoadingMore = true;
+    protected boolean mIsLoadingMore = false;
 
     @Nullable
     @Override
@@ -53,7 +53,7 @@ public class BaseListFragment extends BaseFragment implements BaseListContract.V
                 BaseListAdapter adapter = (BaseListAdapter) mRecyclerView.getAdapter();
                 int itemCount = adapter.getItemCount();
                 int last = manager.findLastVisibleItemPosition();
-                if (!mIsLoadingMore && last == itemCount - 1) {
+                if (!mIsLoadingMore && last > 0 && last == itemCount - 1) {
                     onLoadMore();
                     showLoadMoreView(true);
                 }

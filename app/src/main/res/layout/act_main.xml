@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    tools:context="com.andy.base.MainActivity">
+    tools:context="com.andy.dribbble.MainActivity">
     <RelativeLayout
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"/>
-        <com.andy.base.view.TabView
+        <com.andy.dribbble.view.TabView
             android:id="@+id/tab_view"
             android:layout_below="@id/tool_bar"
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <com.andy.base.view.LoadingButton
+        <com.andy.dribbble.view.LoadingButton
             android:id="@+id/loading_btn"
             android:layout_margin="10dp"
             android:padding="12dp"

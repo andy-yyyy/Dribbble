@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    tools:context="com.andy.base.MainActivity">
+    tools:context="com.andy.dribbble.MainActivity">
     <RelativeLayout
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"/>
-        <com.andy.base.TabView
+        <com.andy.dribbble.view.TabView
             android:id="@+id/tab_view"
             android:layout_below="@id/tool_bar"
             android:layout_width="match_parent"
@@ -28,19 +28,27 @@
     <LinearLayout
         android:id="@+id/frame_drawer"
         android:orientation="vertical"
-        android:background="#ff0000"
+        android:background="@color/bg_default"
         android:layout_gravity="start"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
             android:id="@+id/iv"
             android:src="@mipmap/mm"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="240dp" />
         <Button
-            android:id="@+id/btn"
-            android:text="关闭"
+            android:id="@+id/tv"
+            android:text="Login in"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <com.andy.dribbble.view.LoadingButton
+            android:id="@+id/loading_btn"
+            android:layout_margin="10dp"
+            android:padding="12dp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -4,20 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.view.View;
 import android.widget.TextView;
 
-import com.andy.base.beans.CommentInfo;
-import com.andy.base.beans.ShotInfo;
-import com.andy.base.contract.CommentsListContract;
-import com.andy.base.contract.ShotsListContract;
-import com.andy.base.presenter.CommentsListPresenter;
-import com.andy.base.presenter.ShotsListPresenter;
+import com.andy.dribbble.beans.CommentInfo;
+import com.andy.dribbble.beans.ShotInfo;
+import com.andy.dribbble.contract.CommentsListContract;
+import com.andy.dribbble.presenter.CommentsListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

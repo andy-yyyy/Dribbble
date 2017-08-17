@@ -39,7 +39,7 @@ public class ShotDetailFrag extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.frag_shot_detail, container, false);
+        return inflater.inflate(R.layout.frag_shot_detail_head, container, false);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ShotDetailFrag extends BaseFragment {
     }
 
     private void initView(View view) {
-        ImageView image = (ImageView) view.findViewById(R.id.img);
+
         TextView updateTime = (TextView) view.findViewById(R.id.update_time);
         TextView likesCount = (TextView) view.findViewById(R.id.likes_count);
         TextView commentsCount = (TextView) view.findViewById(R.id.comments_count);
@@ -71,7 +71,6 @@ public class ShotDetailFrag extends BaseFragment {
         });
 
         if (mShotInfo != null) {
-            Glide.with(getContext()).load(mShotInfo.getImages().getHidp()).into(image);
             updateTime.setText(mShotInfo.getUpdateTime());
             likesCount.setText(getFormatString(R.string.likes_count, mShotInfo.getLikesCount()));
             commentsCount.setText(getFormatString(R.string.comments_count, mShotInfo.getCommentsCount()));

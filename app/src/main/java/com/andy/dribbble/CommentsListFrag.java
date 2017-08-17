@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by andy on 2016/12/28.
  */
-public class CommentsListFrag extends BaseListFragment implements CommentsListContract.View {
+public class CommentsListFrag extends CommonListFrag implements CommentsListContract.View {
 
     public static final String SHOT_ID = "shot_id";
     private CommentsListAdapter mAdapter;
@@ -42,10 +42,7 @@ public class CommentsListFrag extends BaseListFragment implements CommentsListCo
         mAdapter = new CommentsListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setNestedScrollingEnabled(true);
-        mRefreshLayout.setNestedScrollingEnabled(false);
-        mRefreshLayout.setEnabled(false);
-        mRefreshLayout.setVisibility(View.GONE);
+        mRecyclerView.setNestedScrollingEnabled(false);
         mPresenter = new CommentsListPresenter(this);
         mPresenter.updateData(mPage, mShotId);
     }

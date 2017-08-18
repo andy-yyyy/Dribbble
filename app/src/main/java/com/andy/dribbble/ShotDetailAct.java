@@ -8,8 +8,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.andy.dribbble.beans.ShotInfo;
+import com.bumptech.glide.Glide;
 
 /**
  * Created by andy on 2016/12/11.
@@ -57,6 +59,7 @@ public class ShotDetailAct extends BaseActivity {
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        ImageView imageView = (ImageView) findViewById(R.id.image);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,6 +67,7 @@ public class ShotDetailAct extends BaseActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (mShotInfo != null) {
             toolbar.setTitle(mShotInfo.getTitle());
+            Glide.with(this).load(mShotInfo.getImages().getNormal()).into(imageView);
             ft.replace(R.id.header_container, ShotDetailFrag.getInstance(mShotInfo));
             ft.replace(R.id.list_container, CommentsListFrag.getInstance(mShotInfo.getId())).commitAllowingStateLoss();
         }

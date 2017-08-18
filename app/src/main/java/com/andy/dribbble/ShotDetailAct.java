@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.andy.dribbble.beans.ShotInfo;
 
@@ -37,11 +38,22 @@ public class ShotDetailAct extends BaseActivity {
         super.onSaveInstanceState(outState);
         outState.putSerializable(SHOT_INFO, mShotInfo);
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        return true;
-//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_detail, menu);
+        return true;
+    }
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);

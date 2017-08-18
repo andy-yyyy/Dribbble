@@ -16,35 +16,37 @@ import java.util.List;
  */
 public class ShotsListFrag extends BaseListFragment implements ShotsListContract.View {
 
+    public static final String KEY_TITLE = "title";
     private ShotsListAdapter mAdapter;
     private ShotsListContract.Presenter mPresenter;
 
     private int mPage = 1;
+    private String mTitle;
+
     private String mListType;
     private String mTimeFrame;
     private String mTime;
     private String mSort;
 
+    public static ShotsListFrag newInstance(String title) {
+        ShotsListFrag frag = new ShotsListFrag();
+        Bundle b = new Bundle();
+        b.putString(KEY_TITLE, title);
+        frag.setArguments(b);
+        return frag;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_TITLE, mTitle);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new ShotsListAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
-        mPresenter = new ShotsListPresenter(this);
-        mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
-        mAdapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int position) {
-                ShotInfo shotInfo = mAdapter.getDataAtPosition(position);
-                startActivity(ShotDetailAct.getIntent(getActivity(), shotInfo));
-            }
-        });
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        initData(savedInstanceState);
+        initView();
         initWithCache();
     }
 
@@ -74,6 +76,38 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         List<ShotInfo> shotList = CacheUtil.fetchCacheShotList(getContext());
         if (shotList != null) {
             mAdapter.updateData(shotList);
+        }
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    private void initView() {
+        mAdapter = new ShotsListAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
+        mPresenter = new ShotsListPresenter(this);
+        mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
+        mAdapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                ShotInfo shotInfo = mAdapter.getDataAtPosition(position);
+                startActivity(ShotDetailAct.getIntent(getActivity(), shotInfo));
+            }
+        });
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+    }
+
+    private void initData(Bundle b) {
+        if (b != null) {
+            mTitle = b.getString(KEY_TITLE);
+        } else if (getArguments() != null) {
+            mTitle = getArguments().getString(KEY_TITLE);
         }
     }
 }

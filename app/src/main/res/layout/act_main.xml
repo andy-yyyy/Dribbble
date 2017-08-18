@@ -5,26 +5,9 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
     tools:context="com.andy.dribbble.MainActivity">
-    <RelativeLayout
-        android:id="@+id/frame_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"/>
-        <com.andy.dribbble.view.TabView
-            android:id="@+id/tab_view"
-            android:layout_below="@id/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"/>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_below="@id/tab_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
+
+    <include layout="@layout/included_act_main_content"/>
+
     <LinearLayout
         android:id="@+id/frame_drawer"
         android:orientation="vertical"

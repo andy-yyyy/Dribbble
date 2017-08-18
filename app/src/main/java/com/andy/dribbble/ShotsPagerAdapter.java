@@ -13,9 +13,12 @@ import java.util.List;
 public class ShotsPagerAdapter extends FragmentPagerAdapter {
 
     private List<ShotsListFrag> mFrags = new ArrayList<>();
-    public ShotsPagerAdapter(FragmentManager fm, List<ShotsListFrag> frags) {
+    private List<String> mTabNames;
+
+    public ShotsPagerAdapter(FragmentManager fm, List<ShotsListFrag> frags, List<String> tabNames) {
         super(fm);
         this.mFrags = frags;
+        this.mTabNames = tabNames;
     }
 
     @Override
@@ -26,5 +29,13 @@ public class ShotsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return mFrags.size();
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        if (mTabNames != null && position < mTabNames.size()) {
+            return mTabNames.get(position);
+        }
+        return super.getPageTitle(position);
     }
 }

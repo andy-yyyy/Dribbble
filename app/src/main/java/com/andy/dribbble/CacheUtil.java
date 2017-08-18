@@ -43,7 +43,7 @@ public class CacheUtil {
         saveStringData(context, FILE_NAME_COMMENT_LIST, json);
     }
 
-    public List<CommentInfo> fetchCacheCommentList(Context context) {
+    public static List<CommentInfo> fetchCacheCommentList(Context context) {
         String json = fetchStringData(context, FILE_NAME_COMMENT_LIST);
         Gson gson = new Gson();
         UserInfo info = new CommentInfo(){}.getUserInfo();

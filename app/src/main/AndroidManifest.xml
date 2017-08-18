@@ -3,6 +3,7 @@
     package="com.andy.dribbble">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!--<application android:name=".common_utils.App"/>-->
     <application
         android:name="com.andy.dribbble.common_utils.App"

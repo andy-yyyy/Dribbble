@@ -45,6 +45,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+        initWithCache();
     }
 
     @Override
@@ -67,5 +68,12 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     protected void onLoadMore() {
         super.onLoadMore();
         mPresenter.loadMoreData(++mPage, mListType, mTimeFrame, mTime, mSort);
+    }
+
+    private void initWithCache() {
+        List<ShotInfo> shotList = CacheUtil.fetchCacheShotList(getContext());
+        if (shotList != null) {
+            mAdapter.updateData(shotList);
+        }
     }
 }

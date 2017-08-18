@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.andy.dribbble.beans.CommentInfo;
+import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.contract.CommentsListContract;
 import com.andy.dribbble.presenter.CommentsListPresenter;
 
@@ -45,6 +46,7 @@ public class CommentsListFrag extends CommonListFrag implements CommentsListCont
         mRecyclerView.setNestedScrollingEnabled(false);
         mPresenter = new CommentsListPresenter(this);
         mPresenter.updateData(mPage, mShotId);
+        initWithCache();
     }
 
     @Override
@@ -62,6 +64,7 @@ public class CommentsListFrag extends CommonListFrag implements CommentsListCont
     @Override
     public void refreshView(List<CommentInfo> infoList) {
         mAdapter.updateData(infoList);
+        CacheUtil.cacheCommentList(getContext(), infoList);
     }
 
     @Override
@@ -77,6 +80,13 @@ public class CommentsListFrag extends CommonListFrag implements CommentsListCont
             }
         } else {
             savedInstanceState.get(SHOT_ID);
+        }
+    }
+
+    private void initWithCache() {
+        List<CommentInfo> shotList = CacheUtil.fetchCacheCommentList(getContext());
+        if (shotList != null) {
+            mAdapter.updateData(shotList);
         }
     }
 }

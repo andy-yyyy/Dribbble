@@ -25,7 +25,7 @@ import retrofit2.Response;
 /**
  * Created by andy on 2017/1/7.
  */
-public class UserInfoAct extends BaseActivity {
+public class UserInfoAct extends BaseMDActivity {
 
     public static final String TAG_USER_INFO = "user_info";
     public static final String TAG_IS_CURRENT_USER = "is_current_user";
@@ -52,12 +52,10 @@ public class UserInfoAct extends BaseActivity {
         return intent;
     }
 
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_user_info);
-        initData(savedInstanceState);
-        initView();
+    protected int getContentLayout() {
+        return R.layout.act_user_info;
     }
 
     @Override
@@ -66,7 +64,9 @@ public class UserInfoAct extends BaseActivity {
         outState.putSerializable(TAG_USER_INFO, mUserInfo);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
+        super.initView();
         mAvatar = (ImageView) findViewById(R.id.avatar);
         mName = (TextView) findViewById(R.id.name);
         mFollow = (Button) findViewById(R.id.follow);
@@ -79,6 +79,8 @@ public class UserInfoAct extends BaseActivity {
     private void updateUseInfo() {
         if (mUserInfo != null) {
             Glide.with(this).load(mUserInfo.getAvatarUrl()).into(mAvatar);
+            mToolBar.setTitle(mUserInfo.getName());
+            mImage.setImageResource(R.mipmap.bg_user_info);
             mName.setText(mUserInfo.getName());
             mFollowerCount.update(mUserInfo.getFollowersCount() + "", "Followers");
             mFollowingsCount.update(mUserInfo.getFollowingsCount() + "", "Followings");
@@ -108,7 +110,9 @@ public class UserInfoAct extends BaseActivity {
         }
     }
 
-    private void initData(Bundle savedInstanceState) {
+    @Override
+    protected void initData(Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
         Object isCurrentUser;
         if (savedInstanceState == null) {
             mUserInfo = (UserInfo) getIntent().getSerializableExtra(TAG_USER_INFO);

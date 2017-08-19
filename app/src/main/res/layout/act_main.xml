@@ -3,35 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     tools:context="com.andy.dribbble.MainActivity">
 
     <include layout="@layout/included_act_main_content"/>
 
-    <LinearLayout
-        android:id="@+id/frame_drawer"
-        android:orientation="vertical"
-        android:background="@color/bg_default"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        app:menu="@menu/action_drawer"
+        app:headerLayout="@layout/drawer_header"
         android:layout_gravity="start"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/iv"
-            android:src="@mipmap/mm"
-            android:scaleType="centerCrop"
-            android:layout_width="match_parent"
-            android:layout_height="240dp" />
-        <Button
-            android:id="@+id/tv"
-            android:text="Login in"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <com.andy.dribbble.view.LoadingButton
-            android:id="@+id/loading_btn"
-            android:layout_margin="10dp"
-            android:padding="12dp"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 </android.support.v4.widget.DrawerLayout>

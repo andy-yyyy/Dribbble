@@ -1,8 +1,9 @@
 package com.andy.dribbble;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -12,15 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.andy.dribbble.api.ApiUtil;
 import com.andy.dribbble.common_utils.ToastUtil;
-import com.andy.dribbble.view.LoadingButton;
-import com.andy.dribbble.view.TabView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +23,8 @@ import java.util.List;
 public class MainActivity extends BaseActivity {
 
     private DrawerLayout mDrawerLayout;
-    private RelativeLayout mFrameContent;
-    private LinearLayout mFrameDrawer;
-    private ViewPager mViewPager;
-//    private TabView mTab;
-    private Button mLoginBtn;
-    private Toolbar mToolBar;
-    private ImageView mImageView;
 
-    private ShotsListFrag mShotsListFrag;
     private List<ShotsListFrag> mFrags;
-    private boolean mChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +34,8 @@ public class MainActivity extends BaseActivity {
         ToastUtil.setContext(this);
         initData();
         initTitleBar();
-        initView();
         initDrawView();
+        initView();
     }
 
     @Override
@@ -74,7 +60,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initData() {
-        mShotsListFrag = new ShotsListFrag();
         mFrags = new ArrayList<>();
         ShotsListFrag a = ShotsListFrag.newInstance("Popular");
         ShotsListFrag b = ShotsListFrag.newInstance("Recent");
@@ -85,9 +70,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initTitleBar() {
-        this.mToolBar = (Toolbar) findViewById(R.id.tool_bar);
-        mToolBar.setTitleTextColor(getResources().getColor(R.color.white));
-        setSupportActionBar(mToolBar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setHomeAsUpIndicator(R.mipmap.ic_menu);
@@ -97,7 +82,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        this.mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         List<String> tabNames = new ArrayList<>();
         tabNames.add("Popular");
@@ -105,52 +90,35 @@ public class MainActivity extends BaseActivity {
         tabNames.add("Animated");
         TabLayout tab = (TabLayout) findViewById(R.id.tabs);
         tab.setTabTextColors(Color.WHITE, getResources().getColor(R.color.colorAccent));
-        tab.setupWithViewPager(mViewPager);
-        mViewPager.setAdapter(new ShotsPagerAdapter(getSupportFragmentManager(), mFrags, tabNames));
+        tab.setupWithViewPager(viewPager);
+        viewPager.setAdapter(new ShotsPagerAdapter(getSupportFragmentManager(), mFrags, tabNames));
     }
 
     private void initDrawView() {
-        this.mLoginBtn = (Button) findViewById(R.id.tv);
-        this.mImageView = (ImageView) findViewById(R.id.iv);
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+        final NavigationView nav = (NavigationView) findViewById(R.id.nav_view);
+        nav.getMenu().getItem(0).setChecked(true);
+        nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(new Intent(MainActivity.this, LoginAct.class));
-            }
-        });
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                if (ApiUtil.hasToken()) {
-                    startActivity(UserInfoAct.getIntent(MainActivity.this, true));
-                } else {
-                    startActivity(LoginAct.getIntent(MainActivity.this));
-                }
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                item.setChecked(!item.isChecked());
+                mDrawerLayout.closeDrawers();
+                return true;
             }
         });
 
-        final LoadingButton btn = (LoadingButton) findViewById(R.id.loading_btn);
-        btn.setClickable(true);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn.showLoading(true);
-                btn.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        btn.showLoading(false);
-                        if (mChecked) {
-                            mChecked = false;
-                            btn.toggle(false, "关注");
-                        } else {
-                            mChecked = true;
-                            btn.toggle(true, "已关注");
-                        }
+        View header = nav.getHeaderView(0);
+        if (header != null) {
+            header.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDrawerLayout.closeDrawers();
+                    if (ApiUtil.hasToken()) {
+                        startActivity(UserInfoAct.getIntent(MainActivity.this, true));
+                    } else {
+                        startActivity(LoginAct.getIntent(MainActivity.this));
                     }
-                }, 2000);
-            }
-        });
+                }
+            });
+        }
     }
 }

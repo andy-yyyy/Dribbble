@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/drawer_header"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+    <ImageView
+        android:src="@mipmap/bg_drawer"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+    <TextView
+        android:id="@+id/user_name"
+        android:text="UserName"
+        android:textSize="24sp"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

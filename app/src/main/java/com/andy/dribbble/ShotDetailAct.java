@@ -2,12 +2,15 @@ package com.andy.dribbble;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.andy.dribbble.beans.ShotInfo;
@@ -45,7 +48,9 @@ public class ShotDetailAct extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+//                onBackPressed();
+                final NestedScrollView scrollView  = (NestedScrollView) findViewById(R.id.scroll_view);
+                scrollView.scrollTo(0, 0);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -71,6 +76,17 @@ public class ShotDetailAct extends BaseActivity {
             ft.replace(R.id.header_container, ShotDetailFrag.getInstance(mShotInfo));
             ft.replace(R.id.list_container, CommentsListFrag.getInstance(mShotInfo.getId())).commitAllowingStateLoss();
         }
+        initScrollView();
+    }
+
+    private void initScrollView() {
+        final NestedScrollView scrollView  = (NestedScrollView) findViewById(R.id.scroll_view);
+        scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                scrollView.scrollTo(0, 0);  // 解决第一次进来时详情头部不显示的问题
+            }
+        });
     }
 
     private void initData(Bundle savedInstanceState) {

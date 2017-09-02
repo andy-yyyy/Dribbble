@@ -48,9 +48,7 @@ public class ShotDetailAct extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                onBackPressed();
-                final NestedScrollView scrollView  = (NestedScrollView) findViewById(R.id.scroll_view);
-                scrollView.scrollTo(0, 0);
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);

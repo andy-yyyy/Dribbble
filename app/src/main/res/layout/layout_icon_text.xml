@@ -8,12 +8,12 @@
         android:id="@+id/icon"
         android:scaleType="centerInside"
         android:layout_gravity="center"
-        android:src="@mipmap/like"
+        android:src="@mipmap/ic_like"
         android:layout_width="16dp"
         android:layout_height="16dp" />
     <TextView
         android:id="@+id/text"
-        android:text="38喜欢"
+        android:text="38"
         android:textSize="14sp"
         android:layout_gravity="center"
         android:gravity="center"

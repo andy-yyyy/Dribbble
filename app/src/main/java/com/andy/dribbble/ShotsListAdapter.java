@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.common_utils.ScreenUtil;
+import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
 
 /**
@@ -33,10 +34,10 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
     protected void onBindItemHolder(Holder holder, int position) {
         super.onBindItemHolder(holder, position);
         ShotInfo info = mData.get(position);
-        holder.updateTime.setText(info.getUpdateTime());
-        holder.likesCount.setText(getFormatString(R.string.likes_count, info.getLikesCount()));
-        holder.commentsCount.setText(getFormatString(R.string.comments_count, info.getCommentsCount()));
-        holder.viewsCount.setText(getFormatString(R.string.views_count, info.getViewsCount()));
+        holder.updateTime.setText(String.valueOf(info.getUpdateTime()));
+        holder.likesCount.setText(String.valueOf(info.getLikesCount()));
+        holder.commentsCount.setText(String.valueOf(info.getCommentsCount()));
+        holder.viewsCount.setText(String.valueOf(info.getViewsCount()));
 
         // 设置最后一个item底部的margin
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
@@ -57,14 +58,14 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
 
     class Holder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView updateTime, likesCount, commentsCount, viewsCount;
+        IconText updateTime, likesCount, commentsCount, viewsCount;
         public Holder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image);
-            updateTime = (TextView) itemView.findViewById(R.id.update_time);
-            likesCount = (TextView) itemView.findViewById(R.id.likes_count);
-            commentsCount = (TextView) itemView.findViewById(R.id.comments_count);
-            viewsCount = (TextView) itemView.findViewById(R.id.views_count);
+            updateTime = (IconText) itemView.findViewById(R.id.update_time);
+            likesCount = (IconText) itemView.findViewById(R.id.likes_count);
+            commentsCount = (IconText) itemView.findViewById(R.id.comments_count);
+            viewsCount = (IconText) itemView.findViewById(R.id.views_count);
         }
     }
 }

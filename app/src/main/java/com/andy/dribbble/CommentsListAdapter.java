@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.UserInfo;
+import com.andy.dribbble.view.IconText;
 
 /**
  * Created by andy on 2016/12/28.
@@ -44,7 +45,7 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
         if (info.getBody() != null) {
             holder.content.setText(Html.fromHtml(info.getBody()));
         }
-        holder.likesCount.setText(getFormatString(R.string.likes_count, info.getLikesCount()));
+        holder.likesCount.setText(String.valueOf(info.getLikesCount()));
         holder.time.setText(info.getCreateTime());
     }
 
@@ -53,13 +54,14 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
     }
 
     class Holder extends RecyclerView.ViewHolder {
-        TextView userName, time, likesCount, content;
+        TextView userName, time, content;
+        IconText likesCount;
         ImageView userAvatar;
         public Holder(View itemView) {
             super(itemView);
             userName = (TextView) itemView.findViewById(R.id.user_name);
             time = (TextView) itemView.findViewById(R.id.time);
-            likesCount = (TextView) itemView.findViewById(R.id.likes_count);
+            likesCount = (IconText) itemView.findViewById(R.id.likes_count);
             content = (TextView) itemView.findViewById(R.id.content);
             userAvatar = (ImageView) itemView.findViewById(R.id.user_avatar);
         }

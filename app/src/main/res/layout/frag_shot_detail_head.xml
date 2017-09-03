@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white"
     android:layout_width="match_parent"
@@ -12,28 +13,28 @@
             android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <com.andy.dribbble.view.IconText
                 android:id="@+id/update_time"
-                android:text="2016-12-10"
+                app:icon="@mipmap/ic_time"
                 style="@style/BaseTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <TextView
+            <com.andy.dribbble.view.IconText
                 android:id="@+id/likes_count"
-                android:text="236喜欢"
+                app:icon="@mipmap/ic_like"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <TextView
+            <com.andy.dribbble.view.IconText
                 android:id="@+id/comments_count"
-                android:text="38评论"
+                app:icon="@mipmap/ic_comment"
                 android:layout_toLeftOf="@id/likes_count"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <TextView
+            <com.andy.dribbble.view.IconText
                 android:id="@+id/views_count"
-                android:text="4353浏览"
+                app:icon="@mipmap/ic_view"
                 android:layout_toLeftOf="@id/comments_count"
                 android:layout_toStartOf="@id/comments_count"
                 android:layout_marginRight="10dp"

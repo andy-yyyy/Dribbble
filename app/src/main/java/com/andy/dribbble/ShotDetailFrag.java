@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.andy.dribbble.api.CommentsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
+import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -51,10 +52,10 @@ public class ShotDetailFrag extends BaseFragment {
 
     private void initView(View view) {
 
-        TextView updateTime = (TextView) view.findViewById(R.id.update_time);
-        TextView likesCount = (TextView) view.findViewById(R.id.likes_count);
-        TextView commentsCount = (TextView) view.findViewById(R.id.comments_count);
-        TextView viewsCount = (TextView) view.findViewById(R.id.views_count);
+        IconText updateTime = (IconText) view.findViewById(R.id.update_time);
+        IconText likesCount = (IconText) view.findViewById(R.id.likes_count);
+        IconText commentsCount = (IconText) view.findViewById(R.id.comments_count);
+        IconText viewsCount = (IconText) view.findViewById(R.id.views_count);
         TextView title = (TextView) view.findViewById(R.id.title);
         TextView description = (TextView) view.findViewById(R.id.description);
         TextView name = (TextView) view.findViewById(R.id.name);
@@ -72,9 +73,9 @@ public class ShotDetailFrag extends BaseFragment {
 
         if (mShotInfo != null) {
             updateTime.setText(mShotInfo.getUpdateTime());
-            likesCount.setText(getFormatString(R.string.likes_count, mShotInfo.getLikesCount()));
-            commentsCount.setText(getFormatString(R.string.comments_count, mShotInfo.getCommentsCount()));
-            viewsCount.setText(getFormatString(R.string.views_count, mShotInfo.getViewsCount()));
+            likesCount.setText(String.valueOf(mShotInfo.getLikesCount()));
+            commentsCount.setText(String.valueOf(mShotInfo.getCommentsCount()));
+            viewsCount.setText(String.valueOf(mShotInfo.getViewsCount()));
             title.setText(mShotInfo.getTitle());
             name.setText(mShotInfo.getUserInfo().getName());
             userName.setText(mShotInfo.getUserInfo().getUserName());

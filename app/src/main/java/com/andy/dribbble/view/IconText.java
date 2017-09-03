@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +20,6 @@ import com.andy.dribbble.R;
 
 public class IconText extends LinearLayout {
 
-    protected Context mContext;
     protected LinearLayout mRootView;
     protected ImageView mIconView;
     protected TextView mTextView;
@@ -35,35 +35,38 @@ public class IconText extends LinearLayout {
         super(context, attrs);
         initAttr(attrs);
         initView();
-        refreshView();
+//        refreshView();
     }
 
     protected void initView() {
-        mContext = getContext();
         mRootView = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.layout_icon_text, this, true);
         mIconView = (ImageView) findViewById(R.id.icon);
         mTextView = (TextView) findViewById(R.id.text);
     }
 
     protected void initAttr(AttributeSet attrs) {
-        TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.IconText);
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.IconText, 0, 0);
         mText = ta.getString(R.styleable.IconText_text);
+        Log.d("aaa", "mText: "+mText);
         mIconRes = ta.getResourceId(R.styleable.IconText_icon, -1);
+        Log.d("aaa", "mIconRes: "+mIconRes);
         ta.recycle();
     }
 
-    public void updateIcon(int iconRes) {
+    public void setIconRes(int iconRes) {
         this.mIconRes = iconRes;
         refreshView();
     }
 
-    public void upateText(String text) {
+    public void setText(String text) {
         this.mText = text;
         refreshView();
     }
 
     public void refreshView() {
         mTextView.setText(mText);
-        mIconView.setImageResource(mIconRes);
+        if (mIconRes != 0 && mIconRes != -1) {
+            mIconView.setImageResource(mIconRes);
+        }
     }
 }

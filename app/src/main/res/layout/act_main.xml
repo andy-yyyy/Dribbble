@@ -3,46 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
-    tools:context="com.andy.base.MainActivity">
-    <RelativeLayout
-        android:id="@+id/frame_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"/>
-        <com.andy.base.TabView
-            android:id="@+id/tab_view"
-            android:layout_below="@id/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"/>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_below="@id/tab_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/frame_drawer"
-        android:orientation="vertical"
-        android:background="@color/bg_default"
+    tools:context="com.andy.dribbble.MainActivity">
+
+    <include layout="@layout/included_act_main_content"/>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        app:menu="@menu/action_drawer"
+        app:headerLayout="@layout/drawer_header"
         android:layout_gravity="start"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/iv"
-            android:src="@mipmap/mm"
-            android:scaleType="centerCrop"
-            android:layout_width="match_parent"
-            android:layout_height="240dp" />
-        <Button
-            android:id="@+id/btn"
-            android:text="Login in"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="match_parent"/>
 </android.support.v4.widget.DrawerLayout>

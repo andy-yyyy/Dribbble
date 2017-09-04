@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.andy.dribbble.view.IconText
+                android:id="@+id/update_time"
+                app:icon="@mipmap/ic_time"
+                style="@style/BaseTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.andy.dribbble.view.IconText
+                android:id="@+id/likes_count"
+                app:icon="@mipmap/ic_like"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.andy.dribbble.view.IconText
+                android:id="@+id/comments_count"
+                app:icon="@mipmap/ic_comment"
+                android:layout_toLeftOf="@id/likes_count"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.andy.dribbble.view.IconText
+                android:id="@+id/views_count"
+                app:icon="@mipmap/ic_view"
+                android:layout_toLeftOf="@id/comments_count"
+                android:layout_toStartOf="@id/comments_count"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <include layout="@layout/common_divider"/>
+
+        <RelativeLayout
+            android:id="@+id/user_info"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/avatar"
+                android:src="@mipmap/avatar"
+                android:scaleType="centerCrop"
+                android:layout_width="45dp"
+                android:layout_height="45dp" />
+            <TextView
+                android:id="@+id/name"
+                android:text="梦想国度"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:layout_toRightOf="@id/avatar"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/user_name"
+                android:text="andy"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:layout_below="@id/name"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/avatar"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <include layout="@layout/common_divider"/>
+        <TextView
+            android:id="@+id/title"
+            android:text="Boardmaps"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/description"
+            android:text="Boardmaps decision management system."
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</ScrollView>

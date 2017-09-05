@@ -24,7 +24,7 @@ public class DateTimeUtil {
     public static final int DELTA_MIN = 60;
     public static final int DELTA_HOUR = DELTA_MIN*60;
     public static final int DELTA_DAY = DELTA_HOUR*24;
-    public static final int DELTA_MONTH = DELTA_HOUR*30;
+    public static final int DELTA_MONTH = DELTA_DAY*30;
 
     public static String formatDate(String dateStr) {
         Date date = parseDateFromServer(dateStr);
@@ -34,22 +34,31 @@ public class DateTimeUtil {
         Date now = new Date();
         long delta = (now.getTime() - date.getTime()) / 1000;  // 距离目前的时间（秒）
         if (delta < DELTA_MIN) {
-            return delta +" seconds ago";
+            return getFriendlyTime((int) delta, "second");
         } else if (delta <DELTA_HOUR) {
             int m = (int) (delta / DELTA_MIN);
-            return m + " minutes ago";
+            return getFriendlyTime(m, "minute");
         } else if (delta < DELTA_DAY) {
             int h = (int) (delta / DELTA_HOUR);
-            return h + " hours ago";
+            return getFriendlyTime(h, "hour");
         } else if (delta < DELTA_MONTH){
-            int d = (int) (delta / DELTA_MONTH);
-            return d + " days ago";
+            int d = (int) (delta / DELTA_DAY);
+            return getFriendlyTime(d, "day");
         } else {
             SimpleDateFormat df = new SimpleDateFormat(PATTERN_LOCAL_DATE, Locale.getDefault());
             return df.format(date);
         }
     }
 
+    private static String getFriendlyTime(int num, String unit) {
+        if (num ==1) {
+            return num + " " + unit + " ago";
+        } else if (num > 1) {
+            return num + " " + unit + "s ago";
+        } else {
+            return "";
+        }
+    }
     public static String formatTime(String dateStr) {
         Date date = parseDateFromServer(dateStr);
         if (date == null) {

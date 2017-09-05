@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.andy.dribbble.api.ApiUtil;
 import com.andy.dribbble.common_utils.ToastUtil;
+import com.andy.dribbble.local_beans.ShotListConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +62,9 @@ public class MainActivity extends BaseActivity {
 
     private void initData() {
         mFrags = new ArrayList<>();
-        ShotsListFrag a = ShotsListFrag.newInstance("Popular");
-        ShotsListFrag b = ShotsListFrag.newInstance("Recent");
-        ShotsListFrag c = ShotsListFrag.newInstance("Animated");
+        ShotsListFrag a = ShotsListFrag.newInstance(new ShotListConfig.Builder().build());
+        ShotsListFrag b = ShotsListFrag.newInstance(new ShotListConfig.Builder().sort("recent").build());
+        ShotsListFrag c = ShotsListFrag.newInstance(new ShotListConfig.Builder().listType("animated").build());
         mFrags.add(a);
         mFrags.add(b);
         mFrags.add(c);

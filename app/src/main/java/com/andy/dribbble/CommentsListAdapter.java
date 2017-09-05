@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.UserInfo;
+import com.andy.dribbble.common_utils.DateTimeUtil;
 import com.andy.dribbble.view.IconText;
+import com.bumptech.glide.Glide;
 
 /**
  * Created by andy on 2016/12/28.
@@ -41,12 +44,13 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
         UserInfo userInfo = info.getUserInfo();
         if(userInfo != null) {
             holder.userName.setText(userInfo.getName());
+            Glide.with(mContext).load(userInfo.getAvatarUrl()).into(holder.userAvatar);
         }
-        if (info.getBody() != null) {
-            holder.content.setText(Html.fromHtml(info.getBody()));
+        if (!TextUtils.isEmpty(info.getBody())) {
+            holder.content.setText(Html.fromHtml(info.getBody().trim()));
         }
         holder.likesCount.setText(String.valueOf(info.getLikesCount()));
-        holder.time.setText(info.getCreateTime());
+        holder.time.setText(DateTimeUtil.formatDate(info.getCreateTime()));
     }
 
     private String getFormatString(int resId, Object obj) {

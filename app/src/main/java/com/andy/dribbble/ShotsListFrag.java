@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.contract.ShotsListContract;
+import com.andy.dribbble.local_beans.ShotListConfig;
 import com.andy.dribbble.presenter.ShotsListPresenter;
 
 import java.util.List;
@@ -16,22 +17,21 @@ import java.util.List;
  */
 public class ShotsListFrag extends BaseListFragment implements ShotsListContract.View {
 
-    public static final String KEY_TITLE = "title";
+    public static final String KEY_CONFIG = "config";
     private ShotsListAdapter mAdapter;
     private ShotsListContract.Presenter mPresenter;
 
+    private ShotListConfig mConfig;
     private int mPage = 1;
-    private String mTitle;
-
     private String mListType;
     private String mTimeFrame;
     private String mTime;
     private String mSort;
 
-    public static ShotsListFrag newInstance(String title) {
+    public static ShotsListFrag newInstance(ShotListConfig config) {
         ShotsListFrag frag = new ShotsListFrag();
         Bundle b = new Bundle();
-        b.putString(KEY_TITLE, title);
+        b.putSerializable(KEY_CONFIG, config);
         frag.setArguments(b);
         return frag;
     }
@@ -39,7 +39,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_TITLE, mTitle);
+        outState.putSerializable(KEY_CONFIG, mConfig);
     }
 
     @Override
@@ -79,10 +79,6 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         }
     }
 
-    public String getTitle() {
-        return mTitle;
-    }
-
     private void initView() {
         mAdapter = new ShotsListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -105,9 +101,15 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
 
     private void initData(Bundle b) {
         if (b != null) {
-            mTitle = b.getString(KEY_TITLE);
+            mConfig = (ShotListConfig) b.getSerializable(KEY_CONFIG);
         } else if (getArguments() != null) {
-            mTitle = getArguments().getString(KEY_TITLE);
+            mConfig = (ShotListConfig) getArguments().getSerializable(KEY_CONFIG);
+        }
+        if (mConfig != null) {
+            mListType = mConfig.listType;
+            mTimeFrame = mConfig.timeFrame;
+            mTime = mConfig.date;
+            mSort = mConfig.sort;
         }
     }
 }

@@ -17,13 +17,14 @@ import java.util.Locale;
 
 public class DateTimeUtil {
 
-    public static final String PATTERN_SERVER = "yyyy-MM-DD'T'HH:mm:ss'Z'";
-    public static final String PATTERN_LOCAL_DATE = "yyyy-MM-DD";
-    public static final String PATTERN_LOCAL_TIME = "HH:mm:ss";
+    public static final String PATTERN_SERVER = "yyyy-MM-dd'T'hh:mm:ss'Z'";
+    public static final String PATTERN_LOCAL_DATE = "yyyy-MM-dd";
+    public static final String PATTERN_LOCAL_TIME = "hh:mm:ss";
 
     public static final int DELTA_MIN = 60;
     public static final int DELTA_HOUR = DELTA_MIN*60;
     public static final int DELTA_DAY = DELTA_HOUR*24;
+    public static final int DELTA_MONTH = DELTA_HOUR*30;
 
     public static String formatDate(String dateStr) {
         Date date = parseDateFromServer(dateStr);
@@ -33,13 +34,16 @@ public class DateTimeUtil {
         Date now = new Date();
         long delta = (now.getTime() - date.getTime()) / 1000;  // 距离目前的时间（秒）
         if (delta < DELTA_MIN) {
-            return "seconds ago";
+            return delta +" seconds ago";
         } else if (delta <DELTA_HOUR) {
             int m = (int) (delta / DELTA_MIN);
-            return m + "minutes ago";
+            return m + " minutes ago";
         } else if (delta < DELTA_DAY) {
             int h = (int) (delta / DELTA_HOUR);
-            return h + "hours ago";
+            return h + " hours ago";
+        } else if (delta < DELTA_MONTH){
+            int d = (int) (delta / DELTA_MONTH);
+            return d + " days ago";
         } else {
             SimpleDateFormat df = new SimpleDateFormat(PATTERN_LOCAL_DATE, Locale.getDefault());
             return df.format(date);

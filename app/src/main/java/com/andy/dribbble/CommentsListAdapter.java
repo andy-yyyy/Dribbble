@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.UserInfo;
+import com.andy.dribbble.common_utils.DateTimeUtil;
 import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
 
@@ -49,7 +50,7 @@ public class CommentsListAdapter extends BaseListAdapter<CommentInfo, CommentsLi
             holder.content.setText(Html.fromHtml(info.getBody().trim()));
         }
         holder.likesCount.setText(String.valueOf(info.getLikesCount()));
-        holder.time.setText(info.getCreateTime());
+        holder.time.setText(DateTimeUtil.formatDate(info.getCreateTime()));
     }
 
     private String getFormatString(int resId, Object obj) {

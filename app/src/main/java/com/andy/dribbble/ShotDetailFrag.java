@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.andy.dribbble.api.CommentsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
+import com.andy.dribbble.common_utils.DateTimeUtil;
 import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
 
@@ -72,7 +73,7 @@ public class ShotDetailFrag extends BaseFragment {
         });
 
         if (mShotInfo != null) {
-            updateTime.setText(mShotInfo.getUpdateTime());
+            updateTime.setText(DateTimeUtil.formatDate(mShotInfo.getUpdateTime()));
             likesCount.setText(String.valueOf(mShotInfo.getLikesCount()));
             commentsCount.setText(String.valueOf(mShotInfo.getCommentsCount()));
             viewsCount.setText(String.valueOf(mShotInfo.getViewsCount()));

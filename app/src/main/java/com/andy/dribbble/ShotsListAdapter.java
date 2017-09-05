@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.andy.dribbble.beans.ShotInfo;
+import com.andy.dribbble.common_utils.DateTimeUtil;
 import com.andy.dribbble.common_utils.ScreenUtil;
 import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
@@ -34,7 +34,7 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
     protected void onBindItemHolder(Holder holder, int position) {
         super.onBindItemHolder(holder, position);
         ShotInfo info = mData.get(position);
-        holder.updateTime.setText(String.valueOf(info.getUpdateTime()));
+        holder.updateTime.setText(DateTimeUtil.formatDate(info.getUpdateTime()));
         holder.likesCount.setText(String.valueOf(info.getLikesCount()));
         holder.commentsCount.setText(String.valueOf(info.getCommentsCount()));
         holder.viewsCount.setText(String.valueOf(info.getViewsCount()));

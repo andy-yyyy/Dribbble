@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +16,7 @@ import com.andy.dribbble.api.UserInfoService;
 import com.andy.dribbble.beans.UserInfo;
 import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.view.LinearButton;
+import com.andy.dribbble.view.UserShotsFrag;
 import com.bumptech.glide.Glide;
 
 import retrofit2.Call;
@@ -73,6 +74,7 @@ public class UserInfoAct extends BaseMDActivity {
         mFollowerCount = (LinearButton) findViewById(R.id.followers_count);
         mFollowingsCount = (LinearButton) findViewById(R.id.followings_count);
         mLikesCount = (LinearButton) findViewById(R.id.likes_count);
+        initList();
         updateUseInfo();
     }
 
@@ -141,5 +143,10 @@ public class UserInfoAct extends BaseMDActivity {
                 }
             });
         }
+    }
+
+    private void initList() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.user_shots_container, UserShotsFrag.newInstance(mUserInfo.getId())).commitAllowingStateLoss();
     }
 }

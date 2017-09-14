@@ -3,6 +3,8 @@ package com.andy.dribbble.api;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.beans.UserInfo;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
@@ -26,8 +28,10 @@ public interface UserInfoInterface {
     );
 
     @GET("v1/users/{user_id}/shots")
-    Call<ShotInfo> getUserShots(
+    Call<List<ShotInfo>> getUserShots(
+            @Path("user_id") int userId,
             @Query("access_token") String token,
-            @Path("user_id") int userId
+            @Query("per_page") int pageSize,
+            @Query("page") int page
     );
 }

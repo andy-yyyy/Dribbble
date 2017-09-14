@@ -1,5 +1,6 @@
 package com.andy.dribbble.api;
 
+import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.beans.UserInfo;
 
 import retrofit2.Call;
@@ -14,7 +15,9 @@ import retrofit2.http.Query;
 public interface UserInfoInterface {
 
     @GET("v1/user")
-    Call<UserInfo> getUserInfo(@Query("access_token") String token);
+    Call<UserInfo> getUserInfo(
+            @Query("access_token") String token
+    );
 
     @PUT("v1/users/{user_id}/follow")
     Call<Object> follow(
@@ -22,4 +25,9 @@ public interface UserInfoInterface {
             @Query("access_token") String token
     );
 
+    @GET("v1/users/{user_id}/shots")
+    Call<ShotInfo> getUserShots(
+            @Query("access_token") String token,
+            @Path("user_id") int userId
+    );
 }

@@ -1,5 +1,6 @@
 package com.andy.dribbble.api;
 
+import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.beans.UserInfo;
 
 import retrofit2.Callback;
@@ -18,5 +19,9 @@ public class UserInfoService {
 
     public static void getUserInfo(Callback<UserInfo> callback) {
         ApiUtil.getApi(CLASS).getUserInfo(TOKEN).enqueue(callback);
+    }
+
+    public static void getUserShots(int userId, Callback<ShotInfo> callback) {
+        ApiUtil.getApi(CLASS).getUserShots(TOKEN, userId).enqueue(callback);
     }
 }

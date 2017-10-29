@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Dribbble</string>
+    <string name="login_tips">即将跳转到官方授权登录页面，我们不会记录您的登录信息，请放心使用！</string>
 </resources>
  

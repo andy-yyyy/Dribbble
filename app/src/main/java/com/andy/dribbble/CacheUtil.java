@@ -24,6 +24,19 @@ public class CacheUtil {
 
     public static final String FILE_NAME_SHOT_LIST = "shot_list";
     public static final String FILE_NAME_COMMENT_LIST = "comment_list";
+    public static final String FILE_NAME_CURRENT_USER_INFO = "current_user_info";
+
+    public static UserInfo fetchUserInfo(Context context) {
+        String json = fetchStringData(context, FILE_NAME_CURRENT_USER_INFO);
+        Gson gson = new Gson();
+        return gson.fromJson(json, UserInfo.class);
+    }
+
+    public static void cacheUserInfo(Context context, UserInfo userInfo) {
+        Gson gson = new Gson();
+        String json = gson.toJson(userInfo);
+        saveStringData(context, FILE_NAME_CURRENT_USER_INFO, json);
+    }
 
     public static void cacheShotList(Context context, List<ShotInfo> list) {
         Gson gson = new Gson();

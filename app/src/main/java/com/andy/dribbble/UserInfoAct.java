@@ -125,21 +125,25 @@ public class UserInfoAct extends BaseMDActivity {
             mIsCurrentUser = (boolean) isCurrentUser;
         }
 
-        if (mIsCurrentUser && ApiUtil.hasToken()) {
-            UserInfoService.getUserInfo(new Callback<UserInfo>() {
-                @Override
-                public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
-                    if (response.isSuccessful()) {
-                        mUserInfo = response.body();
-                        updateUseInfo();
+        if (mIsCurrentUser) {
+            mUserInfo = CacheUtil.fetchUserInfo(this);
+            if (mUserInfo == null && ApiUtil.hasToken()) {
+                UserInfoService.getUserInfo(new Callback<UserInfo>() {
+                    @Override
+                    public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
+                        if (response.isSuccessful()) {
+                            mUserInfo = response.body();
+                            CacheUtil.cacheUserInfo(UserInfoAct.this, mUserInfo);
+                            updateUseInfo();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<UserInfo> call, Throwable t) {
-                    ToastUtil.show(t.getMessage());
-                }
-            });
+                    @Override
+                    public void onFailure(Call<UserInfo> call, Throwable t) {
+                        ToastUtil.show(t.getMessage());
+                    }
+                });
+            }
         }
     }
 }

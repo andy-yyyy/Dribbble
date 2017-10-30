@@ -13,8 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.andy.dribbble.api.ApiUtil;
+import com.andy.dribbble.beans.UserInfo;
 import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.local_beans.ShotListConfig;
 
@@ -109,6 +111,11 @@ public class MainActivity extends BaseActivity {
 
         View header = nav.getHeaderView(0);
         if (header != null) {
+            TextView userTv = (TextView) header.findViewById(R.id.user_name);
+            UserInfo currentUser = CacheUtil.fetchUserInfo(this);
+            if (currentUser != null) {
+                userTv.setText(currentUser.getName());
+            }
             header.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

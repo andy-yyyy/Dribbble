@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -13,7 +15,11 @@ import java.util.List;
  */
 public abstract class BaseListAdapter<D, H extends RecyclerView.ViewHolder> extends ExtensibleListAdapter<D, H> {
 
+    private static final String DEFAULT_NO_DATA_TIPS = "——我也是有底线的——";
+    private static final String DEFAULT_LOADING_TIPS = "加载中...";
     private OnItemClickListener mOnItemClickListener;
+    private ProgressBar mPb;
+    private TextView mTipView;
 
     public BaseListAdapter(Context context) {
         super(context);
@@ -45,7 +51,10 @@ public abstract class BaseListAdapter<D, H extends RecyclerView.ViewHolder> exte
 
     @Override
     protected View onCreateFooter(ViewGroup parent) {
-        return LayoutInflater.from(mContext).inflate(R.layout.footer_load_more, parent, false);
+        View footer = LayoutInflater.from(mContext).inflate(R.layout.footer_load_more, parent, false);
+        mPb = (ProgressBar) footer.findViewById(R.id.pb);
+        mTipView = (TextView) footer.findViewById(R.id.tv);
+        return footer;
     }
 
     @Override
@@ -55,6 +64,32 @@ public abstract class BaseListAdapter<D, H extends RecyclerView.ViewHolder> exte
 
     public void setOnItemClickListener(OnItemClickListener itemClickListener) {
         this.mOnItemClickListener = itemClickListener;
+    }
+
+    public void showLoadingView(boolean show) {
+        showFooterView(show);
+        if (mPb != null) {
+            mPb.setVisibility(View.VISIBLE);
+        }
+        if (mTipView != null) {
+            mTipView.setVisibility(View.VISIBLE);
+            mTipView.setText(DEFAULT_LOADING_TIPS);
+        }
+    }
+
+    public void showFooterTips() {
+        showFooterTips(DEFAULT_NO_DATA_TIPS);
+    }
+
+    public void showFooterTips(String tip) {
+        showFooterView(true);
+        if (mPb != null) {
+            mPb.setVisibility(View.GONE);
+        }
+        if (mTipView != null) {
+            mTipView.setVisibility(View.VISIBLE);
+            mTipView.setText(tip);
+        }
     }
 
     interface OnItemClickListener {

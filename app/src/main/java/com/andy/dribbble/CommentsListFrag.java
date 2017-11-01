@@ -46,7 +46,7 @@ public class CommentsListFrag extends CommonListFrag implements CommentsListCont
         mRecyclerView.setNestedScrollingEnabled(false);
         mPresenter = new CommentsListPresenter(this);
         mPresenter.updateData(mPage, mShotId);
-        initWithCache();
+//        initWithCache();
     }
 
     @Override
@@ -64,12 +64,15 @@ public class CommentsListFrag extends CommonListFrag implements CommentsListCont
     @Override
     public void refreshView(List<CommentInfo> infoList) {
         mAdapter.updateData(infoList);
-        CacheUtil.cacheCommentList(getContext(), infoList);
+//        CacheUtil.cacheCommentList(getContext(), infoList);
     }
 
     @Override
     public void refreshMoreView(List<CommentInfo> moreList) {
         mAdapter.addData(moreList);
+        if (moreList != null && moreList.isEmpty()) {
+            mAdapter.showFooterTips();
+        }
     }
 
     private void initData(Bundle savedInstanceState) {

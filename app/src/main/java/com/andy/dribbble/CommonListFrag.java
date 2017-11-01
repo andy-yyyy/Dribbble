@@ -37,6 +37,8 @@ public class CommonListFrag extends BaseFragment implements BaseListContract.Vie
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
+        //因为外层有NestedScrollView，并且RecyclerView设置了setNestedScrollEnabled()为false，导致findLastVisiblePosition不准确
+        /*
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -55,20 +57,30 @@ public class CommonListFrag extends BaseFragment implements BaseListContract.Vie
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
-        });
+        });*/
+        //避免onLoad()方法执行时Adapter的底部加载UI还未初始化，导致不能显示加载UI，延迟执行该方法
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onLoad();
+            }
+        }, 100);
     }
 
     @Override
     public void showRefreshView(boolean refreshing) {
-        // 没有下拉刷新
+        RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
+        if (adapter instanceof BaseListAdapter) {
+            ((BaseListAdapter) adapter).showLoadingView(refreshing);
+        }
     }
 
     @Override
     public void showLoadMoreView(boolean show) {
         mIsLoadingMore = show;
         RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
-        if (adapter instanceof ExtensibleListAdapter) {
-            ((ExtensibleListAdapter) adapter).showFooterView(show);
+        if (adapter instanceof BaseListAdapter) {
+            ((BaseListAdapter) adapter).showLoadingView(show);
         }
     }
 
@@ -76,6 +88,13 @@ public class CommonListFrag extends BaseFragment implements BaseListContract.Vie
      * 触发加载更多操作
      */
     protected void onLoadMore() {
+        showLoadMoreView(true);
+    }
 
+    /**
+     * 触发加载操作
+     */
+    protected void onLoad() {
+        showRefreshView(true);
     }
 }

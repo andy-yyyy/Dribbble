@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
@@ -23,6 +24,7 @@ public class ShotDetailAct extends BaseActivity {
 
     public static final String SHOT_INFO = "shot_info";
     private ShotInfo mShotInfo;
+    private CommentsListFrag mCommentsFrag;
 
     public static Intent getIntent(Context context, ShotInfo shotInfo) {
         Intent intent = new Intent(context, ShotDetailAct.class);
@@ -69,20 +71,27 @@ public class ShotDetailAct extends BaseActivity {
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (mShotInfo != null) {
+            mCommentsFrag = CommentsListFrag.getInstance(mShotInfo.getId());
             toolbar.setTitle(mShotInfo.getTitle());
             Glide.with(this).load(mShotInfo.getImages().getNormal()).into(imageView);
             ft.replace(R.id.header_container, ShotDetailFrag.getInstance(mShotInfo));
-            ft.replace(R.id.list_container, CommentsListFrag.getInstance(mShotInfo.getId())).commitAllowingStateLoss();
+            ft.replace(R.id.list_container, mCommentsFrag).commitAllowingStateLoss();
         }
         initScrollView();
     }
 
     private void initScrollView() {
         final NestedScrollView scrollView  = (NestedScrollView) findViewById(R.id.scroll_view);
-        scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onGlobalLayout() {
-                scrollView.scrollTo(0, 0);  // 解决第一次进来时详情头部不显示的问题
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()))  {
+                    // 滑动到底部了，开始加载更多数据
+                    if (mCommentsFrag != null) {
+                        mCommentsFrag.onLoadMore();
+                    }
+                    Log.d("aaa", "scrollY "+scrollY);
+                }
             }
         });
     }

@@ -7,17 +7,24 @@ import android.view.View;
 
 import com.andy.dribbble.adapter.BaseListAdapter;
 import com.andy.dribbble.adapter.ShotsListAdapter;
+import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.ShotInfo;
+import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.contract.ShotsListContract;
 import com.andy.dribbble.local_beans.ShotListConfig;
 import com.andy.dribbble.presenter.ShotsListPresenter;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by andy on 2016/12/11.
  */
-public class ShotsListFrag extends BaseListFragment implements ShotsListContract.View {
+public class ShotsListFrag extends BaseListFragment implements ShotsListContract.View ,
+        BaseListAdapter.OnItemClickListener, ShotsListAdapter.ActionListener {
 
     public static final String KEY_CONFIG = "config";
     private ShotsListAdapter mAdapter;
@@ -74,6 +81,27 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         mPresenter.loadMoreData(++mPage, mListType, mTimeFrame, mTime, mSort);
     }
 
+    @Override
+    public void onItemClick(View itemView, int position) {
+        ShotInfo shotInfo = mAdapter.getDataAtPosition(position);
+        startActivity(ShotDetailAct.getIntent(getActivity(), shotInfo));
+    }
+
+    @Override
+    public void onLikeClick(View view, int shotId) {
+        ShotsService.likeShot(shotId, new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                ToastUtil.show("喜欢成功");
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                ToastUtil.show("喜欢成功");
+            }
+        });
+    }
+
     private void initWithCache() {
         List<ShotInfo> shotList = CacheUtil.fetchCacheShotList(getContext());
         if (shotList != null) {
@@ -83,16 +111,11 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
 
     private void initView() {
         mAdapter = new ShotsListAdapter(this);
+        mAdapter.setActionListener(this);
+        mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mPresenter = new ShotsListPresenter(this);
         mPresenter.updateData(mPage, mListType, mTimeFrame, mTime, mSort);
-        mAdapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int position) {
-                ShotInfo shotInfo = mAdapter.getDataAtPosition(position);
-                startActivity(ShotDetailAct.getIntent(getActivity(), shotInfo));
-            }
-        });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

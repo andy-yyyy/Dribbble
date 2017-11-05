@@ -95,7 +95,7 @@ public abstract class BaseListAdapter<D, H extends RecyclerView.ViewHolder> exte
         }
     }
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
 }

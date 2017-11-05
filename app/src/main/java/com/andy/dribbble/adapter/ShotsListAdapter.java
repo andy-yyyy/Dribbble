@@ -20,10 +20,15 @@ import com.bumptech.glide.Glide;
 public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter.Holder> {
 
     private Fragment mFrag;
+    private ActionListener mListener;
 
     public ShotsListAdapter(Fragment frag) {
         super(frag.getContext());
         this.mFrag = frag;
+    }
+
+    public void setActionListener(ActionListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -34,7 +39,11 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
     @Override
     protected void onBindItemHolder(Holder holder, int position) {
         super.onBindItemHolder(holder, position);
-        ShotInfo info = mData.get(position);
+        final ShotInfo info = mData.get(position);
+        if (info == null) {
+            return;
+        }
+
         holder.updateTime.setText(DateTimeUtil.formatDate(info.getUpdateTime()));
         holder.likesCount.setText(String.valueOf(info.getLikesCount()));
         holder.commentsCount.setText(String.valueOf(info.getCommentsCount()));
@@ -51,6 +60,16 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
 
         // 加载图片
         Glide.with(mFrag).load(info.getImages().getNormal()).into(holder.image);
+
+        if (mListener != null) {
+            holder.likesCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onLikeClick(view, info.getId());
+                }
+            });
+        }
+
     }
 
     private String getFormatString(int resId, Object obj) {
@@ -68,5 +87,9 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
             commentsCount = (IconText) itemView.findViewById(R.id.comments_count);
             viewsCount = (IconText) itemView.findViewById(R.id.views_count);
         }
+    }
+
+    public interface ActionListener {
+        void onLikeClick(View view, int shotId);
     }
 }

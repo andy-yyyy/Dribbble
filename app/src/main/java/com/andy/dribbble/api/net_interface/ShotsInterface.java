@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.andy.dribbble.api;
+package com.andy.dribbble.api.net_interface;
 
 import com.andy.dribbble.beans.ShotInfo;
 

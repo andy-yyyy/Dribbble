@@ -1,4 +1,4 @@
-package com.andy.dribbble.api;
+package com.andy.dribbble.api.net_interface;
 
 import com.andy.dribbble.beans.Token;
 

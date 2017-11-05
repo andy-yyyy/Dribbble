@@ -1,5 +1,6 @@
 package com.andy.dribbble.api;
 
+import com.andy.dribbble.api.net_interface.CommentsInterface;
 import com.andy.dribbble.beans.CommentInfo;
 
 import java.util.List;

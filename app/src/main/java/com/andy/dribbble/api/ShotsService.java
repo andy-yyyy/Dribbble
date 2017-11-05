@@ -1,5 +1,6 @@
 package com.andy.dribbble.api;
 
+import com.andy.dribbble.api.net_interface.ShotsInterface;
 import com.andy.dribbble.beans.ShotInfo;
 
 import java.util.List;

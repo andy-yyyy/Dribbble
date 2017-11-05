@@ -1,5 +1,6 @@
 package com.andy.dribbble.api;
 
+import com.andy.dribbble.api.net_interface.OauthInterface;
 import com.andy.dribbble.beans.Token;
 
 import java.util.HashMap;

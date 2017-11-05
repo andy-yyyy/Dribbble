@@ -1,5 +1,6 @@
 package com.andy.dribbble.api;
 
+import com.andy.dribbble.api.net_interface.UserInfoInterface;
 import com.andy.dribbble.beans.UserInfo;
 
 import retrofit2.Callback;

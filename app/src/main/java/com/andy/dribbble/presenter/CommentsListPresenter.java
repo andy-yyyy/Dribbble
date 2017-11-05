@@ -4,6 +4,7 @@
 package com.andy.dribbble.presenter;
 
 import com.andy.dribbble.api.CommentsService;
+import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.contract.CommentsListContract;
@@ -28,7 +29,7 @@ public class CommentsListPresenter implements CommentsListContract.Presenter {
 
     @Override
     public void updateData(int page, int shotId) {
-        CommentsService.getCommentsList(page, shotId, new Callback<List<CommentInfo>>() {
+        ShotsService.getCommentsList(page, shotId, new Callback<List<CommentInfo>>() {
             @Override
             public void onResponse(Call<List<CommentInfo>> call, Response<List<CommentInfo>> response) {
                 mView.showRefreshView(false);
@@ -49,7 +50,7 @@ public class CommentsListPresenter implements CommentsListContract.Presenter {
 
     @Override
     public void loadMoreData(int page, int shotId) {
-        CommentsService.getCommentsList(page, shotId, new Callback<List<CommentInfo>>() {
+        ShotsService.getCommentsList(page, shotId, new Callback<List<CommentInfo>>() {
             @Override
             public void onResponse(Call<List<CommentInfo>> call, Response<List<CommentInfo>> response) {
                 mView.showLoadMoreView(false);

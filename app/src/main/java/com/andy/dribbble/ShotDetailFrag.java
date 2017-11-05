@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andy.dribbble.api.CommentsService;
+import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.common_utils.DateTimeUtil;
@@ -102,7 +103,7 @@ public class ShotDetailFrag extends BaseFragment {
 
         if (mShotInfo != null) {
             int id = mShotInfo.getId();
-            CommentsService.getCommentsList(1, id, new Callback<List<CommentInfo>>() {
+            ShotsService.getCommentsList(1, id, new Callback<List<CommentInfo>>() {
                 @Override
                 public void onResponse(Call<List<CommentInfo>> call, Response<List<CommentInfo>> response) {
                     List<CommentInfo> list = response.body();

@@ -13,12 +13,6 @@ import retrofit2.http.Query;
  */
 public interface CommentsInterface {
 
-    @GET("v1/shots/{shot_id}/comments")
-    Call<List<CommentInfo>> getCommentsList(
-            @Query("access_token") String token,
-            @Query("per_page") int pageSize,
-            @Query("page") int page,
-            @Query("shot_id") int shotId
-    );
+
 
 }

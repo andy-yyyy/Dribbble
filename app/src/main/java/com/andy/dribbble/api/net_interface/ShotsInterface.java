@@ -3,6 +3,7 @@
  */
 package com.andy.dribbble.api.net_interface;
 
+import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
 
 import java.util.List;
@@ -31,6 +32,14 @@ public interface ShotsInterface {
     @GET("v1/shots/{shot_id}")
     Call<ShotInfo> getShotInfo(
             @Query("access_token") String token,
+            @Query("shot_id") int shotId
+    );
+
+    @GET("v1/shots/{shot_id}/comments")
+    Call<List<CommentInfo>> getCommentsList(
+            @Query("access_token") String token,
+            @Query("per_page") int pageSize,
+            @Query("page") int page,
             @Query("shot_id") int shotId
     );
 

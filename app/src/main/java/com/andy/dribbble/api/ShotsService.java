@@ -1,6 +1,7 @@
 package com.andy.dribbble.api;
 
 import com.andy.dribbble.api.net_interface.ShotsInterface;
+import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
 
 import java.util.List;
@@ -24,5 +25,7 @@ public class ShotsService {
         ApiUtil.getApi(CLASS).getShotInfo(TOKEN, id).enqueue(callback);
     }
 
-
+    public static void getCommentsList(int page, int shotId, Callback<List<CommentInfo>> callback) {
+        ApiUtil.getApi(CLASS).getCommentsList(TOKEN, PAGE_SIZE, page, shotId).enqueue(callback);
+    }
 }

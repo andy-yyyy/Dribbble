@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.andy.dribbble.adapter.BaseListAdapter;
 import com.andy.dribbble.adapter.ShotsListAdapter;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.contract.ShotsListContract;

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.andy.dribbble.BaseListAdapter;
 import com.andy.dribbble.R;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.common_utils.DateTimeUtil;

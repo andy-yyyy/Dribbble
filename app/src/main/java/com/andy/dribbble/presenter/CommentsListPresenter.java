@@ -3,7 +3,6 @@
  */
 package com.andy.dribbble.presenter;
 
-import com.andy.dribbble.api.CommentsService;
 import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.common_utils.ToastUtil;

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.andy.dribbble.api.CommentsService;
 import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;

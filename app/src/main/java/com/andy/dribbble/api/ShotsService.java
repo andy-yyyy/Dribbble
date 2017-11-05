@@ -28,4 +28,8 @@ public class ShotsService {
     public static void getCommentsList(int page, int shotId, Callback<List<CommentInfo>> callback) {
         ApiUtil.getApi(CLASS).getCommentsList(TOKEN, PAGE_SIZE, page, shotId).enqueue(callback);
     }
+
+    public static void likeShot(int shotId, Callback<Object> callback) {
+        ApiUtil.getApi(CLASS).likeShot(shotId, TOKEN).enqueue(callback);
+    }
 }

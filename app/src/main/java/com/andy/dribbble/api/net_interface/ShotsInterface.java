@@ -10,6 +10,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -41,6 +42,12 @@ public interface ShotsInterface {
             @Query("per_page") int pageSize,
             @Query("page") int page,
             @Query("shot_id") int shotId
+    );
+
+    @POST("v1/shots/{show_id}/")
+    Call<Object> likeShot(
+            @Query("shot_id") int shotId,
+            @Query("access_token") String token
     );
 
 }

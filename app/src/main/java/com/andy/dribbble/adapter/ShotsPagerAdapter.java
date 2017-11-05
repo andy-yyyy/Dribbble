@@ -1,8 +1,10 @@
-package com.andy.dribbble;
+package com.andy.dribbble.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.andy.dribbble.ShotsListFrag;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.andy.dribbble.adapter.ExtensibleListAdapter;
 import com.andy.dribbble.common_utils.ScreenUtil;
 import com.andy.dribbble.contract.BaseListContract;
 

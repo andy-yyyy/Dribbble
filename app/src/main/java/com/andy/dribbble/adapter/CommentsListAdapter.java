@@ -1,4 +1,4 @@
-package com.andy.dribbble;
+package com.andy.dribbble.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.andy.dribbble.BaseListAdapter;
+import com.andy.dribbble.R;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.UserInfo;
 import com.andy.dribbble.common_utils.DateTimeUtil;

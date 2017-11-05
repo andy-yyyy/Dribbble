@@ -1,4 +1,4 @@
-package com.andy.dribbble;
+package com.andy.dribbble.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.andy.dribbble.BaseListAdapter;
+import com.andy.dribbble.R;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.common_utils.DateTimeUtil;
 import com.andy.dribbble.common_utils.ScreenUtil;

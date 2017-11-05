@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.andy.dribbble.adapter.ExtensibleListAdapter;
+
 import java.util.List;
 
 /**

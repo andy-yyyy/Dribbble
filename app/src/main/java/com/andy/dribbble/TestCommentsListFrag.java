@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.andy.dribbble.adapter.CommentsListAdapter;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.contract.CommentsListContract;
 import com.andy.dribbble.presenter.CommentsListPresenter;

@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
+import com.andy.dribbble.adapter.CommentsListAdapter;
 import com.andy.dribbble.beans.CommentInfo;
-import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.contract.CommentsListContract;
 import com.andy.dribbble.presenter.CommentsListPresenter;
 

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.andy.dribbble.adapter.ShotsPagerAdapter;
 import com.andy.dribbble.api.ApiUtil;
 import com.andy.dribbble.beans.UserInfo;
 import com.andy.dribbble.common_utils.ToastUtil;

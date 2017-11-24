@@ -16,19 +16,19 @@
             android:layout_width="match_parent"
             android:layout_height="260dp" />
         <RelativeLayout
-            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/image">
             <com.andy.dribbble.view.IconText
                 android:id="@+id/update_time"
-                style="@style/BaseTextStyle"
+                style="@style/IconTextStyle"
                 app:icon="@mipmap/ic_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <com.andy.dribbble.view.IconText
                 android:id="@+id/likes_count"
                 app:icon="@mipmap/ic_like"
+                style="@style/IconTextStyle"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -36,7 +36,7 @@
                 android:id="@+id/comments_count"
                 app:icon="@mipmap/ic_comment"
                 android:layout_toLeftOf="@id/likes_count"
-                android:layout_marginRight="10dp"
+                style="@style/IconTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <com.andy.dribbble.view.IconText
@@ -44,7 +44,7 @@
                 app:icon="@mipmap/ic_view"
                 android:layout_toLeftOf="@id/comments_count"
                 android:layout_toStartOf="@id/comments_count"
-                android:layout_marginRight="10dp"
+                style="@style/IconTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

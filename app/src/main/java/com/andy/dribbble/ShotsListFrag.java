@@ -62,6 +62,7 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
     @Override
     public void refreshView(List<ShotInfo> infoList) {
         mAdapter.updateData(infoList);
+        CacheUtil.cacheShotList(getActivity(), infoList);
     }
 
     @Override
@@ -92,12 +93,16 @@ public class ShotsListFrag extends BaseListFragment implements ShotsListContract
         ShotsService.likeShot(shotId, new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                ToastUtil.show("喜欢成功");
+                if (response.isSuccessful()) {
+                    ToastUtil.show("喜欢成功");
+                } else {
+                    ToastUtil.show("喜欢失败"+response.message());
+                }
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                ToastUtil.show("喜欢成功");
+                ToastUtil.show("喜欢失败啊"+t.getMessage());
             }
         });
     }

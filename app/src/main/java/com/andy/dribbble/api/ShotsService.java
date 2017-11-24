@@ -32,4 +32,8 @@ public class ShotsService {
     public static void likeShot(int shotId, Callback<Object> callback) {
         ApiUtil.getApi(CLASS).likeShot(shotId, TOKEN).enqueue(callback);
     }
+
+    public static void checkShot(int shotId, Callback<Object> callback) {
+        ApiUtil.getApi(CLASS).checkLike(shotId, TOKEN).enqueue(callback);
+    }
 }

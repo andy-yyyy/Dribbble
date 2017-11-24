@@ -9,8 +9,9 @@
         android:scaleType="centerInside"
         android:layout_gravity="center"
         android:src="@mipmap/ic_like"
-        android:layout_width="16dp"
-        android:layout_height="16dp" />
+        android:padding="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
     <TextView
         android:id="@+id/text"
         android:text="38"

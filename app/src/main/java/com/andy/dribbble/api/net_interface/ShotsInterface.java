@@ -9,6 +9,8 @@ import com.andy.dribbble.beans.ShotInfo;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -44,8 +46,15 @@ public interface ShotsInterface {
             @Query("shot_id") int shotId
     );
 
-    @POST("v1/shots/{show_id}/")
+    @FormUrlEncoded
+    @POST("v1/shots/{shot_id}/like")
     Call<Object> likeShot(
+            @Field("shot_id") int shotId,
+            @Field("access_token") String token
+    );
+
+    @GET("v1/shots/{shot_id}/like")
+    Call<Object> checkLike(
             @Query("shot_id") int shotId,
             @Query("access_token") String token
     );

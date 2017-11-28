@@ -14,6 +14,7 @@ import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.common_utils.DateTimeUtil;
+import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
 
@@ -28,6 +29,7 @@ import retrofit2.Response;
  */
 public class ShotDetailFrag extends BaseFragment {
 
+    public static final String TAG_LIKE = "tag_like";
     private ShotInfo mShotInfo;
 
     public static ShotDetailFrag getInstance(ShotInfo shotInfo) {
@@ -54,7 +56,7 @@ public class ShotDetailFrag extends BaseFragment {
     private void initView(View view) {
 
         IconText updateTime = (IconText) view.findViewById(R.id.update_time);
-        IconText likesCount = (IconText) view.findViewById(R.id.likes_count);
+        final IconText likesCount = (IconText) view.findViewById(R.id.likes_count);
         IconText commentsCount = (IconText) view.findViewById(R.id.comments_count);
         IconText viewsCount = (IconText) view.findViewById(R.id.views_count);
         TextView title = (TextView) view.findViewById(R.id.title);
@@ -62,15 +64,6 @@ public class ShotDetailFrag extends BaseFragment {
         TextView name = (TextView) view.findViewById(R.id.name);
         TextView userName = (TextView) view.findViewById(R.id.user_name);
         ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
-
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mShotInfo != null) {
-                    startActivity(UserInfoAct.getIntent(getContext(), mShotInfo.getUserInfo()));
-                }
-            }
-        });
 
         if (mShotInfo != null) {
             updateTime.setText(DateTimeUtil.formatDate(mShotInfo.getUpdateTime()));
@@ -86,6 +79,68 @@ public class ShotDetailFrag extends BaseFragment {
             if (mShotInfo.getUserInfo() != null) {
                 Glide.with(getContext()).load(mShotInfo.getUserInfo().getAvatarUrl()).into(avatar);
             }
+            avatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(UserInfoAct.getIntent(getContext(), mShotInfo.getUserInfo()));
+                }
+            });
+            ShotsService.checkLike(mShotInfo.getId(), new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    if (response.isSuccessful()) {
+                        likesCount.setIconRes(R.mipmap.ic_like_fill);
+                        likesCount.setTag(TAG_LIKE);
+                        ToastUtil.show("喜欢yes");
+                    } else {
+                        likesCount.setIconRes(R.mipmap.ic_like);
+                        likesCount.setTag(null);
+                        ToastUtil.show("喜欢no");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    likesCount.setIconRes(R.mipmap.ic_like);
+                    likesCount.setTag(null);
+                    ToastUtil.show("喜欢no");
+                }
+            });
+            likesCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShotsService.likeShot(mShotInfo.getId(), new Callback<Object>() {
+                        @Override
+                        public void onResponse(Call<Object> call, Response<Object> response) {
+                            if (response.isSuccessful()) {
+                                updateLikeStatus(likesCount);
+                                ToastUtil.show("喜欢成功");
+                            } else {
+                                ToastUtil.show("喜欢失败:"+response.message());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable t) {
+                            ToastUtil.show("喜欢失败");
+                        }
+                    });
+                }
+            });
+        }
+
+    }
+
+    private void updateLikeStatus(IconText likeCount) {
+        Object tag = likeCount.getTag();
+        if (TAG_LIKE.equals(tag)) {
+            likeCount.setIconRes(R.mipmap.ic_like);
+            likeCount.setText(String.valueOf(mShotInfo.getLikesCount()));
+            likeCount.setTag(null);
+        } else {
+            likeCount.setIconRes(R.mipmap.ic_like_fill);
+            likeCount.setText(String.valueOf(mShotInfo.getLikesCount() + 1));
+            likeCount.setTag(TAG_LIKE);
         }
     }
 

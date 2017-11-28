@@ -13,6 +13,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -49,7 +50,7 @@ public interface ShotsInterface {
     @FormUrlEncoded
     @POST("v1/shots/{shot_id}/like")
     Call<Object> likeShot(
-            @Field("shot_id") int shotId,
+            @Path("shot_id") int shotId,
             @Field("access_token") String token
     );
 

@@ -1,7 +1,5 @@
 package com.andy.dribbble.adapter;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -71,7 +69,7 @@ public class ShotsListAdapter extends BaseListAdapter<ShotInfo, ShotsListAdapter
         // 加载图片
         Glide.with(mFrag).load(info.getImages().getNormal()).into(holder.image);
 
-        ShotsService.checkShot(info.getId(), new Callback<Object>() {
+        ShotsService.checkLike(info.getId(), new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 if (response.isSuccessful()) {

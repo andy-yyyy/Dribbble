@@ -15,8 +15,8 @@ public class ApiConstants {
     public static final String URL_BASE = "https://api.dribbble.com/";
     public static final String URL_AUTHORIZE = "https://dribbble.com/oauth/authorize";
     public static final String URL_USER_ACCESS_TOKEN = "https://dribbble.com/oauth/token";
+    public static final String URL_REDIRECT = "app://base.andy.com";
 
-    public static final String REDIRECT_URI = "app://base.andy.com";
     public static final String SCOPE = "public write";
     public static final String STATE = "kfetjkl4j5jkfjk34jk";
 }

@@ -28,11 +28,11 @@ public class ApiUtil {
         return retrofit.create(cls);
     }
 
-    public static boolean hasToken() {
-        return !TextUtils.isEmpty(getToken());
+    public static boolean hasUserToken() {
+        return !TextUtils.isEmpty(getUserToken());
     }
 
-    public static String getToken() {
+    public static String getUserToken() {
         if (!TextUtils.isEmpty(mToken)) {
             return mToken;
         }
@@ -41,6 +41,15 @@ public class ApiUtil {
             return mToken;
         }
         return null;
+    }
+
+    /**
+     * 先尝试获取用户token，如果没有用户token则使用临时token。
+     * 用户token可以进行评论，点赞等基于用户的操作，临时token只能进行获取列表等操作。
+     * @return
+     */
+    public static String getToken() {
+        return getUserToken() != null ? getUserToken() : ApiConstants.CLIENT_ACCESS_TOKEN;
     }
 
     public static String getTokenFromSp() {

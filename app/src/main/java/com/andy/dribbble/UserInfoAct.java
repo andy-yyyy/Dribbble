@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -90,7 +89,7 @@ public class UserInfoAct extends BaseMDActivity {
                 public void onClick(View v) {
                     // TODO: 2017/1/7 follow action
                     int id = mUserInfo.getId();
-                    if (ApiUtil.hasToken()) {
+                    if (ApiUtil.hasUserToken()) {
                         UserInfoService.follow(id, new Callback<Object>() {
                             @Override
                             public void onResponse(Call<Object> call, Response<Object> response) {
@@ -127,7 +126,7 @@ public class UserInfoAct extends BaseMDActivity {
 
         if (mIsCurrentUser) {
             mUserInfo = CacheUtil.fetchUserInfo(this);
-            if (mUserInfo == null && ApiUtil.hasToken()) {
+            if (mUserInfo == null && ApiUtil.hasUserToken()) {
                 UserInfoService.getUserInfo(new Callback<UserInfo>() {
                     @Override
                     public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {

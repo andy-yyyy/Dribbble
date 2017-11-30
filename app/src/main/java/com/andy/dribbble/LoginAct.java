@@ -51,7 +51,7 @@ public class LoginAct extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     String params = "?client_id=" + ApiConstants.CLIENT_ID
-                            + "&redirect_uri=" + ApiConstants.REDIRECT_URI
+                            + "&redirect_uri=" + ApiConstants.URL_REDIRECT
                             + "&scope=" + ApiConstants.SCOPE
                             + "&state=" + ApiConstants.STATE;
                     Uri uri = Uri.parse(ApiConstants.URL_AUTHORIZE + params);

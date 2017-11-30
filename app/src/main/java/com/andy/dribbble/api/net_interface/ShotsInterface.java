@@ -56,7 +56,7 @@ public interface ShotsInterface {
 
     @GET("v1/shots/{shot_id}/like")
     Call<Object> checkLike(
-            @Query("shot_id") int shotId,
+            @Path("shot_id") int shotId,
             @Query("access_token") String token
     );
 

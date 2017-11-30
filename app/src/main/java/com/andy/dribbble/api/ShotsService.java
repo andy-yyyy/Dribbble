@@ -14,7 +14,7 @@ import retrofit2.Callback;
 public class ShotsService {
 
     private static final Class<ShotsInterface> CLASS = ShotsInterface.class;
-    private static final String TOKEN = ApiConstants.CLIENT_ACCESS_TOKEN;
+    private static final String TOKEN = ApiUtil.getToken();
     private static final int PAGE_SIZE = 10;
 
     public static void getShotsList(int page, String list, String timeFrame, String time, String sort, Callback<List<ShotInfo>> callback) {

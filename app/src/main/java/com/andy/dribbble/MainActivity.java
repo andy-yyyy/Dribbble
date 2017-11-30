@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onClick(View view) {
                     mDrawerLayout.closeDrawers();
-                    if (ApiUtil.hasToken()) {
+                    if (ApiUtil.hasUserToken()) {
                         startActivity(UserInfoAct.getIntent(MainActivity.this, true));
                     } else {
                         startActivity(LoginAct.getIntent(MainActivity.this));

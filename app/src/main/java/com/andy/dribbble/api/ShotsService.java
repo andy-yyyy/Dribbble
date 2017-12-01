@@ -33,6 +33,10 @@ public class ShotsService {
         ApiUtil.getApi(CLASS).likeShot(shotId, TOKEN).enqueue(callback);
     }
 
+    public static void unlikeShot(int shotId, Callback<Object> callback) {
+        ApiUtil.getApi(CLASS).unlikeShot(shotId, TOKEN).enqueue(callback);
+    }
+
     public static void checkLike(int shotId, Callback<Object> callback) {
         ApiUtil.getApi(CLASS).checkLike(shotId, TOKEN).enqueue(callback);
     }

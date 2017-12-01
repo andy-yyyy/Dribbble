@@ -9,6 +9,7 @@ import com.andy.dribbble.beans.ShotInfo;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -52,6 +53,12 @@ public interface ShotsInterface {
     Call<Object> likeShot(
             @Path("shot_id") int shotId,
             @Field("access_token") String token
+    );
+
+    @DELETE("v1/shots/{shot_id}/like")
+    Call<Object> unlikeShot(
+            @Path("shot_id") int shotId,
+            @Query("access_token") String token
     );
 
     @GET("v1/shots/{shot_id}/like")

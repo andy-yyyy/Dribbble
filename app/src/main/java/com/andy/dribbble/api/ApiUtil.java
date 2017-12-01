@@ -3,6 +3,7 @@ package com.andy.dribbble.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.andy.dribbble.common_utils.App;
 
@@ -14,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ApiUtil {
 
+    public static final String TAG = "ApiUtil";
     public static final String KEY_USER_INFO = "user_info";
     public static final String KEY_USER_ACCESS_TOKEN = "user_access_token";
 
@@ -34,10 +36,12 @@ public class ApiUtil {
 
     public static String getUserToken() {
         if (!TextUtils.isEmpty(mToken)) {
+            Log.d(TAG, "get token from static field : "+mToken);
             return mToken;
         }
         mToken = getTokenFromSp();
         if (!TextUtils.isEmpty(mToken)) {
+            Log.d(TAG, "get token from sp : "+mToken);
             return mToken;
         }
         return null;

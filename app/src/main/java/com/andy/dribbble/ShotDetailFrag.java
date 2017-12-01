@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +16,6 @@ import com.andy.dribbble.api.ShotsService;
 import com.andy.dribbble.beans.CommentInfo;
 import com.andy.dribbble.beans.ShotInfo;
 import com.andy.dribbble.common_utils.DateTimeUtil;
-import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.view.IconText;
 import com.bumptech.glide.Glide;
 
@@ -91,11 +92,9 @@ public class ShotDetailFrag extends BaseFragment {
                     if (response.isSuccessful()) {
                         likesCount.setIconRes(R.mipmap.ic_like_fill);
                         likesCount.setTag(TAG_LIKE);
-                        ToastUtil.show("喜欢yes");
                     } else {
                         likesCount.setIconRes(R.mipmap.ic_like);
                         likesCount.setTag(null);
-                        ToastUtil.show("喜欢no");
                     }
                 }
 
@@ -103,35 +102,44 @@ public class ShotDetailFrag extends BaseFragment {
                 public void onFailure(Call<Object> call, Throwable t) {
                     likesCount.setIconRes(R.mipmap.ic_like);
                     likesCount.setTag(null);
-                    ToastUtil.show("喜欢no");
                 }
             });
             likesCount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ShotsService.likeShot(mShotInfo.getId(), new Callback<Object>() {
-                        @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
-                            if (response.isSuccessful()) {
-                                updateLikeStatus(likesCount);
-                                ToastUtil.show("喜欢成功");
-                            } else {
-                                ToastUtil.show("喜欢失败:"+response.message());
-                            }
-                        }
+                    toggleLikeStatus(likesCount);
+                    Object tag = likesCount.getTag();
+                    if (TAG_LIKE.equals(tag)) {
+                        ShotsService.unlikeShot(mShotInfo.getId(), new Callback<Object>() {
+                            @Override
+                            public void onResponse(Call<Object> call, Response<Object> response) {
 
-                        @Override
-                        public void onFailure(Call<Object> call, Throwable t) {
-                            ToastUtil.show("喜欢失败");
-                        }
-                    });
+                            }
+
+                            @Override
+                            public void onFailure(Call<Object> call, Throwable t) {
+                            }
+                        });
+                    } else {
+
+                        ShotsService.likeShot(mShotInfo.getId(), new Callback<Object>() {
+                            @Override
+                            public void onResponse(Call<Object> call, Response<Object> response) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Object> call, Throwable t) {
+                            }
+                        });
+                    }
                 }
             });
         }
 
     }
 
-    private void updateLikeStatus(IconText likeCount) {
+    private void toggleLikeStatus(IconText likeCount) {
         Object tag = likeCount.getTag();
         if (TAG_LIKE.equals(tag)) {
             likeCount.setIconRes(R.mipmap.ic_like);
@@ -142,6 +150,10 @@ public class ShotDetailFrag extends BaseFragment {
             likeCount.setText(String.valueOf(mShotInfo.getLikesCount() + 1));
             likeCount.setTag(TAG_LIKE);
         }
+        Animation anim = new ScaleAnimation(0f, 1.2f, 0f, 1.2f, Animation.RELATIVE_TO_SELF, 0.5f,  Animation.RELATIVE_TO_SELF, 0.5f);
+        anim.setDuration(200);
+        ImageView iconView = (ImageView) likeCount.findViewById(R.id.icon);
+        iconView.startAnimation(anim);
     }
 
     private String getFormatString(int resId, Object obj) {

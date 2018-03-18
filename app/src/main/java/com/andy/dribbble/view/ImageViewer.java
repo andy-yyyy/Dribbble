@@ -52,19 +52,25 @@ public class ImageViewer extends LinearLayout {
     private float mLastScale;
     private double mStartDistance;
     private boolean mShowing;
+    private boolean mIsNormal;
 
     private GestureDetector mDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-//            dismiss();
-            zoom(e);
+            if (mIsNormal) {
+                dismiss();
+            }
             return true;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            zoom(e);
+            if (mIsNormal) {
+                zoomToMax();
+            } else {
+                zoomToNormal();
+            }
             return true;
         }
     });
@@ -105,22 +111,34 @@ public class ImageViewer extends LinearLayout {
     }
 
     public boolean handleBackEvent() {
-        if (mShowing) {
+        if (mShowing && mIsNormal) {
             dismiss();
+            return true;
+        } else if (mShowing) {
+            zoomToNormal();
             return true;
         }
         return false;
     }
 
-    protected void zoom(MotionEvent event) {
-        Matrix m = new Matrix();
-        m.set(mImgView.getImageMatrix());
-        m.postScale(2.0f, 2.0f);
-        mImgView.setImageMatrix(m);
+
+    protected void zoomToMax() {
+        zoom(2.0f);
+        mIsNormal = false;
+    }
+
+    protected void zoomToNormal() {
+        zoom(1.0f);
+        mIsNormal = true;
+    }
+
+    protected void zoom(float target) {
+        ObjectAnimator.ofFloat(mImgView, "scaleX", mImgView.getScaleX(), target).setDuration(300).start();
+        ObjectAnimator.ofFloat(mImgView, "scaleY", mImgView.getScaleY(), target).setDuration(300).start();
     }
 
     protected void dismiss() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(ImageViewer.this, "alpha", getAlpha(), 0).setDuration(1000);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(ImageViewer.this, "alpha", getAlpha(), 0).setDuration(300);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -146,6 +164,7 @@ public class ImageViewer extends LinearLayout {
             mImgView = new ImageView(getContext());
             mImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mLastScale = mImgView.getScaleX();
+            mIsNormal = true;
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
         }
@@ -155,7 +174,7 @@ public class ImageViewer extends LinearLayout {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(1000).start();
+                ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(300).start();
             }
         }, 200);
     }

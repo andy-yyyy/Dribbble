@@ -1,5 +1,7 @@
 package com.andy.dribbble.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -12,16 +14,19 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
 import com.andy.dribbble.common_utils.ScreenUtil;
+import com.andy.dribbble.common_utils.ToastUtil;
 
 /**
  * Created by lixn on 2018/3/17.
@@ -47,7 +52,7 @@ public class ImageViewer extends LinearLayout {
     private int mDragDistanceX;
     private int mDragDistanceY;
     private double mStartDistance;
-
+    private boolean mShowing;
 
     private enum ActionMode {
         IDLE, DRAG, ZOOM
@@ -78,14 +83,39 @@ public class ImageViewer extends LinearLayout {
 
     private void initView(Context context) {
         setOrientation(VERTICAL);
-        setBackgroundColor(Color.parseColor("#33000000"));
+        setBackgroundColor(Color.parseColor("#dd000000"));
         setAlpha(0);
         mScroller = new Scroller(context);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mMinVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
     }
 
+    public boolean handleBackEvent() {
+        if (mShowing) {
+            dismiss();
+            return true;
+        }
+        return false;
+    }
+
+    protected void dismiss() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(ImageViewer.this, "alpha", getAlpha(), 0).setDuration(1000);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                ViewParent vp = getParent();
+                if (vp instanceof ViewGroup) {
+                    ((ViewGroup) vp).removeView(ImageViewer.this);
+                }
+                mShowing = false;
+            }
+        });
+        animator.start();
+    }
+
     public void bloom(Activity context, final ImageView src) {
+        mShowing = true;
         ViewGroup decor = (ViewGroup) context.getWindow().getDecorView();
         if (getParent() == null) {
             decor.addView(this);
@@ -108,7 +138,7 @@ public class ImageViewer extends LinearLayout {
                 mImgView.getGlobalVisibleRect(r);
                 ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(1000).start();
             }
-        }, 1000);
+        }, 200);
     }
 
     private void initImgBounds() {

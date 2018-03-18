@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -48,6 +49,7 @@ public class ImageViewer extends LinearLayout {
     private int mDownY;
     private int mDragDistanceX;
     private int mDragDistanceY;
+    private float mLastScale;
     private double mStartDistance;
     private boolean mShowing;
 
@@ -55,12 +57,14 @@ public class ImageViewer extends LinearLayout {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            dismiss();
+//            dismiss();
+            zoom(e);
             return true;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            zoom(e);
             return true;
         }
     });
@@ -108,9 +112,11 @@ public class ImageViewer extends LinearLayout {
         return false;
     }
 
-    protected void zoom() {
-        mImgView.setScaleX(2.0f);
-        mImgView.setScaleY(2.0f);
+    protected void zoom(MotionEvent event) {
+        Matrix m = new Matrix();
+        m.set(mImgView.getImageMatrix());
+        m.postScale(2.0f, 2.0f);
+        mImgView.setImageMatrix(m);
     }
 
     protected void dismiss() {
@@ -139,6 +145,7 @@ public class ImageViewer extends LinearLayout {
         if (mImgView == null) {
             mImgView = new ImageView(getContext());
             mImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mLastScale = mImgView.getScaleX();
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
         }
@@ -252,7 +259,7 @@ public class ImageViewer extends LinearLayout {
         checkVelocityTracker();
         mVelocityTracker.addMovement(event);
         boolean shouldHandle = isTouchInView(mImgView, event.getRawX(), event.getRawY());
-        switch (event.getAction()) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 mActionMode = ActionMode.DRAG;
                 mCurrentMatrix.set(mImgView.getImageMatrix());
@@ -265,22 +272,26 @@ public class ImageViewer extends LinearLayout {
             case MotionEvent.ACTION_POINTER_DOWN:
                 mActionMode = ActionMode.ZOOM;
                 mStartDistance = calculateDistance(event);
+                mLastScale = mImgView.getScaleX();
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                mActionMode = ActionMode.DRAG;
                 break;
             case MotionEvent.ACTION_MOVE:
-                int deltaX = x - mLastX;
-                int deltaY = y - mLastY;
-                scrollBy(-deltaX, -deltaY);
                 mDragDistanceX = x - mDownX;
                 mDragDistanceY = y - mDownY;
                 if (mDragListener != null) {
                     mDragListener.onDrag(mDragDistanceX, mDragDistanceY);
                 }
-
                 if (mActionMode == ActionMode.ZOOM) {
                     double distance = calculateDistance(event);
                     float scale = (float) (distance/mStartDistance);
-                    mMatrix.set(mCurrentMatrix);
-                    mMatrix.postScale(scale, scale);
+                    mImgView.setScaleX(mLastScale*scale);
+                    mImgView.setScaleY(mLastScale*scale);
+                } else if (mActionMode == ActionMode.DRAG) {
+                    int deltaX = x - mLastX;
+                    int deltaY = y - mLastY;
+                    scrollBy(-deltaX, -deltaY);
                 }
                 mLastX = x;
                 mLastY = y;
@@ -296,7 +307,7 @@ public class ImageViewer extends LinearLayout {
                 }
                 int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY);
                 if (distance > mTouchSlop) {
-                    mScroller.startScroll(getScrollX(), getScrollY(), mDragDistanceX, mDragDistanceY);
+//                    mScroller.startScroll(getScrollX(), getScrollY(), mDragDistanceX, mDragDistanceY);
                     invalidate();
                 }
                 break;
@@ -307,9 +318,12 @@ public class ImageViewer extends LinearLayout {
     }
 
     private double calculateDistance(MotionEvent event) {
-        float x = event.getX(1) - event.getX(0);
-        float y = event.getY(1) - event.getY(0);
-        return Math.sqrt(x*x+y*y);
+        if (event.getPointerCount() > 1) {
+            float x = event.getX(1) - event.getX(0);
+            float y = event.getY(1) - event.getY(0);
+            return Math.sqrt(x*x+y*y);
+        }
+        return 0;
     }
     private boolean isTouchInView(View target, float rawX, float rawY) {
         if (target == null) {

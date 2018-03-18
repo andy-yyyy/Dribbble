@@ -32,12 +32,14 @@ import com.andy.dribbble.common_utils.ScreenUtil;
 
 public class ImageViewer extends LinearLayout {
 
+    public static final int DISTANCE_TRIGGER_DISMISS = 200;
     private ImageView mImgView;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
     private int mImgRes;
     private ImageView mImgSrc;
     private ActionMode mActionMode;
+    private Direction mDirection;
     private Matrix mMatrix = new Matrix();
     private Matrix mCurrentMatrix = new Matrix();
 
@@ -74,8 +76,13 @@ public class ImageViewer extends LinearLayout {
             return true;
         }
     });
+
     private enum ActionMode {
         IDLE, DRAG, ZOOM
+    }
+
+    private enum Direction {
+        UP, DOWN, LEFT, RIGHT
     }
 
     private OnDragListener mDragListener;
@@ -320,20 +327,39 @@ public class ImageViewer extends LinearLayout {
                 mVelocityTracker.computeCurrentVelocity(1000);
                 int vx = (int) (mVelocityTracker.getXVelocity() + 0.5f);
                 int vy = (int) (mVelocityTracker.getYVelocity() + 0.5f);
+                int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY); // 拖动距离
+                Direction direction = caculateDirection();
                 if (vx > mMinVelocity || vy > mMinVelocity) {
                     mScroller.fling(getScrollX(), getScrollY(), -vx, -vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
                     invalidate();
                 }
-                int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY);
-                if (distance > mTouchSlop) {
-//                    mScroller.startScroll(getScrollX(), getScrollY(), mDragDistanceX, mDragDistanceY);
+                if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {
+                    mScroller.startScroll(getScrollX(), getScrollY(), mDragDistanceX, mDragDistanceY);
                     invalidate();
+                } else if (mIsNormal && direction == Direction.DOWN && distance > DISTANCE_TRIGGER_DISMISS) {
+                    dismiss();
                 }
                 break;
         }
         mImgView.setImageMatrix(mMatrix);
         mDetector.onTouchEvent(event);
         return true;
+    }
+
+    private Direction caculateDirection() {
+        Direction d;
+        if (mDragDistanceX < 0 && Math.abs(mDragDistanceX) > Math.abs(mDragDistanceY)) {
+            d = Direction.LEFT;
+        } else if (mDragDistanceY < 0 && Math.abs(mDragDistanceY) > Math.abs(mDragDistanceX)) {
+            d = Direction.UP;
+        } else if (mDragDistanceX > 0 && Math.abs(mDragDistanceX) > Math.abs(mDragDistanceY)) {
+            d = Direction.RIGHT;
+        } else if (mDragDistanceY > 0 && Math.abs(mDragDistanceY)> Math.abs(mDragDistanceX)) {
+            d = Direction.DOWN;
+        } else {
+            d = Direction.DOWN;
+        }
+        return d;
     }
 
     private double calculateDistance(MotionEvent event) {

@@ -2,7 +2,6 @@ package com.andy.dribbble;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -11,10 +10,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 import com.andy.dribbble.beans.ShotInfo;
+import com.andy.dribbble.common_utils.ScreenUtil;
+import com.andy.dribbble.common_utils.ToastUtil;
+import com.andy.dribbble.view.ImageViewer;
 import com.bumptech.glide.Glide;
 
 /**
@@ -25,6 +29,7 @@ public class ShotDetailAct extends BaseActivity {
     public static final String SHOT_INFO = "shot_info";
     private ShotInfo mShotInfo;
     private CommentsListFrag mCommentsFrag;
+    private ImageViewer mScaleImageView;
 
     public static Intent getIntent(Context context, ShotInfo shotInfo) {
         Intent intent = new Intent(context, ShotDetailAct.class);
@@ -64,7 +69,15 @@ public class ShotDetailAct extends BaseActivity {
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        ImageView imageView = (ImageView) findViewById(R.id.image);
+        final ImageView imageView = (ImageView) findViewById(R.id.image);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.show("image");
+                mScaleImageView.bloom(ShotDetailAct.this, imageView);
+            }
+        });
+        mScaleImageView = new ImageViewer(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

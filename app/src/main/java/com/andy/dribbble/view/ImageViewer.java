@@ -2,6 +2,7 @@ package com.andy.dribbble.view;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -77,45 +78,35 @@ public class ImageViewer extends LinearLayout {
 
     private void initView(Context context) {
         setOrientation(VERTICAL);
-        setBackgroundColor(Color.parseColor("#66FF0000"));
+        setBackgroundColor(Color.parseColor("#33000000"));
+        setAlpha(0);
         mScroller = new Scroller(context);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mMinVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
     }
 
-    public void bloom(final ImageView src, final int res) {
+    public void bloom(Activity context, final ImageView src) {
+        ViewGroup decor = (ViewGroup) context.getWindow().getDecorView();
+        if (getParent() == null) {
+            decor.addView(this);
+        }
         mImgSrc = src;
-        mImgRes = res;
         if (mImgSrc != null) {
             mImgView = new ImageView(getContext());
-            mImgView.setImageResource(mImgRes);
-            mImgView.setScaleType(ImageView.ScaleType.MATRIX);
+            mImgView.setImageDrawable(src.getDrawable());
+            mImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mImgView.setLeft(mImgSrc.getLeft());
             int[] loc = new int[2];
             mImgSrc.getLocationOnScreen(loc);
-            mImgView.setTranslationX(loc[0]);
-            mImgView.setTranslationY(loc[1]);
-            mImgView.setBackgroundColor(Color.parseColor("#66ff0000"));
-            int w = mImgSrc.getMeasuredWidth();
-            int h = mImgSrc.getMeasuredHeight();
-            ViewGroup.LayoutParams lp = new LayoutParams(w, h);
+            ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
         }
-        Matrix m = mImgView.getImageMatrix();
-        float imageWidth = mImgView.getDrawable().getIntrinsicWidth();
-        float imageHeight = mImgView.getDrawable().getIntrinsicHeight();
-        RectF drawableRect = new RectF(0, 0, imageWidth, imageHeight);
-        RectF viewRect = new RectF(0, 0, mImgView.getWidth(), mImgView.getHeight());
-//        m.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.CENTER);
-        m.postScale(0.2f, 0.2f);
-        mImgView.setImageMatrix(m);
-        Log.d("aaa", "img bouds:"+mImgView.getLeft()+"; top: "+mImgView.getTop()+"; right:"+mImgView.getRight()+"; bottom:"+mImgView.getBottom());
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 Rect r = new Rect();
                 mImgView.getGlobalVisibleRect(r);
-                animateView(r);
+                ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(1000).start();
             }
         }, 1000);
     }
@@ -166,40 +157,11 @@ public class ImageViewer extends LinearLayout {
         float h = screenHeight/height;
         final float scale = Math.min(v, h);
         ValueAnimator animator = ObjectAnimator.ofFloat(0, 1.0f).setDuration(3000);
+        ObjectAnimator.ofFloat(this, "alpha", 0, 1.0f).setDuration(1000).start();
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float per = (float) animation.getAnimatedValue();
-                float screenWidth = ScreenUtil.getScreenWidth(getContext());
-                float screenHeight = ScreenUtil.getScreenHeight(getContext());
-                mImgView.setTranslationX(calculateTranslationX(rect)*per);
-                mImgView.setTranslationY(calculateTranslationY(rect)*per);
-
-//                mImgView.setScaleX(oldScaleX+(2-oldScaleX)*per);
-//                mImgView.setScaleY(oldScaleY+(1-oldScaleY)*per);
-
-//                lp.width = (int) (oldWidth + (screenWidth-oldWidth)*per);
-//                lp.height = (int) ((oldHeight + screenHeight-oldHeight)*per);
-//                mImgView.setLayoutParams(lp);
-
-                Matrix m = mImgView.getImageMatrix();
-                float scale = 0.5f +(2.0f*per);
-                m.postScale(scale, scale);
-                mImgView.setImageMatrix(m);
-                Log.d("aaa", "scale: "+1);
-//                int l = (int) (rect.left*(1-per));
-//                int t = (int) (rect.top*(1-per)-60);
-//                int r = (int) (rect.right+(screenWidth-rect.right)*(per));
-//                int b = (int) (rect.bottom+(screenHeight-rect.bottom)*(per)-60);
-//                mImgView.layout(l, t, r, b);
-
-//                Matrix m = new Matrix();
-//                m.set(mImgView.getImageMatrix());
-//                float currentScale = 1+(scale-1)*per;
-//                m.postScale(currentScale, currentScale);
-
-//                mImgView.setScaleX(oldScaleX-(scale-oldScaleX)*per);
-//                mImgView.setScaleY(oldScaleY-(scale-oldScaleY)*per);
             }
         });
         animator.start();

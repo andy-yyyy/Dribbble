@@ -12,12 +12,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 import com.andy.dribbble.beans.ShotInfo;
-import com.andy.dribbble.common_utils.ScreenUtil;
 import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.view.ImageViewer;
 import com.bumptech.glide.Glide;
@@ -82,8 +79,7 @@ public class ShotDetailAct extends BaseActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.show("image");
-                mScaleImageView.bloom(ShotDetailAct.this, imageView);
+                mScaleImageView.show(ShotDetailAct.this, imageView);
             }
         });
         mScaleImageView = new ImageViewer(this);

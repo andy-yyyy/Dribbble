@@ -9,12 +9,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -26,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.Scroller;
 
 import com.andy.dribbble.common_utils.ScreenUtil;
-import com.andy.dribbble.common_utils.ToastUtil;
 
 /**
  * Created by lixn on 2018/3/17.
@@ -54,6 +51,19 @@ public class ImageViewer extends LinearLayout {
     private double mStartDistance;
     private boolean mShowing;
 
+    private GestureDetector mDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            dismiss();
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            return true;
+        }
+    });
     private enum ActionMode {
         IDLE, DRAG, ZOOM
     }
@@ -98,6 +108,11 @@ public class ImageViewer extends LinearLayout {
         return false;
     }
 
+    protected void zoom() {
+        mImgView.setScaleX(2.0f);
+        mImgView.setScaleY(2.0f);
+    }
+
     protected void dismiss() {
         ObjectAnimator animator = ObjectAnimator.ofFloat(ImageViewer.this, "alpha", getAlpha(), 0).setDuration(1000);
         animator.addListener(new AnimatorListenerAdapter() {
@@ -114,28 +129,25 @@ public class ImageViewer extends LinearLayout {
         animator.start();
     }
 
-    public void bloom(Activity context, final ImageView src) {
+    public void show(Activity context, final ImageView src) {
         mShowing = true;
+        mImgSrc = src;
         ViewGroup decor = (ViewGroup) context.getWindow().getDecorView();
         if (getParent() == null) {
             decor.addView(this);
         }
-        mImgSrc = src;
-        if (mImgSrc != null) {
+        if (mImgView == null) {
             mImgView = new ImageView(getContext());
-            mImgView.setImageDrawable(src.getDrawable());
             mImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            mImgView.setLeft(mImgSrc.getLeft());
-            int[] loc = new int[2];
-            mImgSrc.getLocationOnScreen(loc);
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
+        }
+        if (mImgSrc != null) {
+            mImgView.setImageDrawable(mImgSrc.getDrawable());
         }
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                Rect r = new Rect();
-                mImgView.getGlobalVisibleRect(r);
                 ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(1000).start();
             }
         }, 200);
@@ -290,7 +302,8 @@ public class ImageViewer extends LinearLayout {
                 break;
         }
         mImgView.setImageMatrix(mMatrix);
-        return shouldHandle;
+        mDetector.onTouchEvent(event);
+        return true;
     }
 
     private double calculateDistance(MotionEvent event) {

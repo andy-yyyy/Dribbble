@@ -47,9 +47,7 @@ public class IconText extends LinearLayout {
     protected void initAttr(AttributeSet attrs) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.IconText, 0, 0);
         mText = ta.getString(R.styleable.IconText_text);
-        Log.d("aaa", "mText: "+mText);
         mIconRes = ta.getResourceId(R.styleable.IconText_icon, -1);
-        Log.d("aaa", "mIconRes: "+mIconRes);
         ta.recycle();
     }
 

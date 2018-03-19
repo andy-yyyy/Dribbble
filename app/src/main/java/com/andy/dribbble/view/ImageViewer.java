@@ -2,13 +2,14 @@ package com.andy.dribbble.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -32,6 +33,8 @@ import com.andy.dribbble.common_utils.ScreenUtil;
 
 public class ImageViewer extends LinearLayout {
 
+    public static final int BG_COLOR_DEFAULT = 0xdd000000;
+    public static final int BG_COLOR_TRANSPARENT = 0x00000000;
     public static final int DISTANCE_TRIGGER_DISMISS = 200;
     private ImageView mImgView;
     private Scroller mScroller;
@@ -110,7 +113,7 @@ public class ImageViewer extends LinearLayout {
 
     private void initView(Context context) {
         setOrientation(VERTICAL);
-        setBackgroundColor(Color.parseColor("#dd000000"));
+        setBackgroundColor(BG_COLOR_DEFAULT);
         setAlpha(0);
         mScroller = new Scroller(context);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -136,6 +139,12 @@ public class ImageViewer extends LinearLayout {
 
     protected void zoomToNormal() {
         zoom(1.0f);
+        ObjectAnimator.ofInt(this, "scrollX", getScrollX(), 0).setDuration(300).start();
+        ObjectAnimator.ofInt(this, "scrollY", getScrollY(), 0).setDuration(300).start();
+        int currentBg = ((ColorDrawable) getBackground().mutate()).getColor();
+        if (getBackground() instanceof ColorDrawable && currentBg != BG_COLOR_DEFAULT) {
+            ObjectAnimator.ofObject(this, "backgroundColor", new ArgbEvaluator(), currentBg, BG_COLOR_DEFAULT).setDuration(300).start();
+        }
         mIsNormal = true;
     }
 
@@ -163,6 +172,9 @@ public class ImageViewer extends LinearLayout {
     public void show(Activity context, final ImageView src) {
         mShowing = true;
         mImgSrc = src;
+        Rect r = new Rect();
+        src.getGlobalVisibleRect(r);
+        Log.d("aaa", "rect: "+r);
         ViewGroup decor = (ViewGroup) context.getWindow().getDecorView();
         if (getParent() == null) {
             decor.addView(this);
@@ -174,6 +186,8 @@ public class ImageViewer extends LinearLayout {
             mIsNormal = true;
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
+        } else {
+            reset();  // 再次进入时重置视图
         }
         if (mImgSrc != null) {
             mImgView.setImageDrawable(mImgSrc.getDrawable());
@@ -184,6 +198,20 @@ public class ImageViewer extends LinearLayout {
                 ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(300).start();
             }
         }, 200);
+    }
+
+    /**
+     * 恢复初始状态
+     */
+    private void reset() {
+        setBackgroundColor(BG_COLOR_DEFAULT);
+        if (getScrollX() != 0 || getScrollY() != 0) {
+            scrollTo(0, 0);
+        }
+        if (mImgView.getScaleX() != 1 || mImgView.getScaleY() != 1) {
+            mImgView.setScaleX(1.0f);
+            mImgView.setScaleY(1.0f);
+        }
     }
 
     private void initImgBounds() {
@@ -284,7 +312,6 @@ public class ImageViewer extends LinearLayout {
         int y = (int) (event.getY() + 0.5f);
         checkVelocityTracker();
         mVelocityTracker.addMovement(event);
-        boolean shouldHandle = isTouchInView(mImgView, event.getRawX(), event.getRawY());
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 mActionMode = ActionMode.DRAG;
@@ -318,6 +345,12 @@ public class ImageViewer extends LinearLayout {
                     int deltaX = x - mLastX;
                     int deltaY = y - mLastY;
                     scrollBy(-deltaX, -deltaY);
+                    if (mIsNormal) {
+                        float friction = Math.abs(mDragDistanceY)*2.0f/ScreenUtil.getScreenHeight(getContext());
+                        ArgbEvaluator evaluator = new ArgbEvaluator();
+                        int color = (int) evaluator.evaluate(Math.min(friction, 1.0f), BG_COLOR_DEFAULT, BG_COLOR_TRANSPARENT);
+                        setBackgroundColor(color);
+                    }
                 }
                 mLastX = x;
                 mLastY = y;
@@ -328,14 +361,13 @@ public class ImageViewer extends LinearLayout {
                 int vx = (int) (mVelocityTracker.getXVelocity() + 0.5f);
                 int vy = (int) (mVelocityTracker.getYVelocity() + 0.5f);
                 int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY); // 拖动距离
-                Direction direction = caculateDirection();
-                if (vx > mMinVelocity || vy > mMinVelocity) {
+                Direction direction = calculateDirection();
+                if (Math.abs(vx) > mMinVelocity || Math.abs(vy) > mMinVelocity) {
                     mScroller.fling(getScrollX(), getScrollY(), -vx, -vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
                     invalidate();
                 }
                 if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {
-                    mScroller.startScroll(getScrollX(), getScrollY(), mDragDistanceX, mDragDistanceY);
-                    invalidate();
+                    zoomToNormal();
                 } else if (mIsNormal && direction == Direction.DOWN && distance > DISTANCE_TRIGGER_DISMISS) {
                     dismiss();
                 }
@@ -346,7 +378,7 @@ public class ImageViewer extends LinearLayout {
         return true;
     }
 
-    private Direction caculateDirection() {
+    private Direction calculateDirection() {
         Direction d;
         if (mDragDistanceX < 0 && Math.abs(mDragDistanceX) > Math.abs(mDragDistanceY)) {
             d = Direction.LEFT;

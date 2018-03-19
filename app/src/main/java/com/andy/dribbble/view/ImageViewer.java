@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -45,15 +46,14 @@ public class ImageViewer extends LinearLayout {
     private Direction mDirection;
     private Matrix mMatrix = new Matrix();
     private Matrix mCurrentMatrix = new Matrix();
+    private PointF mDownPoint;  // 手指按下的点
+    private PointF mLastPoint;  // 上次触摸的点
+    private PointF mMiddlePoint;   // 双指缩放时的中点
 
     private int mTouchSlop;
     private int mMinVelocity;
-    private int mLastY;
-    private int mLastX;
-    private int mDownX;
-    private int mDownY;
-    private int mDragDistanceX;
-    private int mDragDistanceY;
+    private float mDragDistanceX;
+    private float mDragDistanceY;
     private float mLastScale;
     private double mStartDistance;
     private boolean mShowing;
@@ -75,6 +75,24 @@ public class ImageViewer extends LinearLayout {
                 zoomToMax();
             } else {
                 zoomToNormal();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (Math.abs(velocityX) > mMinVelocity || Math.abs(velocityY) > mMinVelocity) {
+                Matrix m = mImgView.getImageMatrix();
+                float[] v = new float[9];
+                m.getValues(v);
+                int translateX = (int) (v[2]+0.5f);
+                int translateY = (int) (v[5]+0.5f);
+                int vx = (int) (mVelocityTracker.getXVelocity() + 0.5f);
+                int vy = (int) (mVelocityTracker.getYVelocity() + 0.5f);
+                mScroller.fling(translateX, translateY, vx, vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                invalidate();
+//                    Log.d("aaa", "vx---> "+vx+"; vy---> "+vy);
+//                    Log.d("aaa", "start x---> "+translateX+"; y--->"+translateY);
             }
             return true;
         }
@@ -181,7 +199,7 @@ public class ImageViewer extends LinearLayout {
         }
         if (mImgView == null) {
             mImgView = new ImageView(getContext());
-            mImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mImgView.setScaleType(ImageView.ScaleType.MATRIX);
             mLastScale = mImgView.getScaleX();
             mIsNormal = true;
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -301,23 +319,25 @@ public class ImageViewer extends LinearLayout {
     public void computeScroll() {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            Matrix matrix = new Matrix();
+            matrix.postTranslate(mScroller.getCurrX(), mScroller.getCurrY());
+            mImgView.setImageMatrix(matrix);
             invalidate();
+        } else {
+            mCurrentMatrix.set(mImgView.getImageMatrix());
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int x = (int) (event.getX() + 0.5f);
-        int y = (int) (event.getY() + 0.5f);
+        PointF point = new PointF(event.getX(), event.getY());
         checkVelocityTracker();
         mVelocityTracker.addMovement(event);
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 mActionMode = ActionMode.DRAG;
                 mCurrentMatrix.set(mImgView.getImageMatrix());
-                mLastX = mDownX= x;
-                mLastY = mDownY = y;
+                mDownPoint = mLastPoint = point;
                 if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
                 }
@@ -326,56 +346,67 @@ public class ImageViewer extends LinearLayout {
                 mActionMode = ActionMode.ZOOM;
                 mStartDistance = calculateDistance(event);
                 mLastScale = mImgView.getScaleX();
+                mMiddlePoint = calculateMiddlePoint(mLastPoint, point);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mActionMode = ActionMode.DRAG;
+                mCurrentMatrix.set(mImgView.getImageMatrix());
+                int index = 0;
+                for (int i=0; i < event.getPointerCount(); i ++) {
+                    if (i != event.getActionIndex()) {
+                        index = i;
+                    }
+                }
+                mDownPoint = new PointF(event.getX(index), event.getY(index));
                 break;
             case MotionEvent.ACTION_MOVE:
-                mDragDistanceX = x - mDownX;
-                mDragDistanceY = y - mDownY;
+                mDragDistanceX = point.x - mDownPoint.x;
+                mDragDistanceY = point.y - mDownPoint.y;
                 if (mDragListener != null) {
                     mDragListener.onDrag(mDragDistanceX, mDragDistanceY);
                 }
                 if (mActionMode == ActionMode.ZOOM) {
                     double distance = calculateDistance(event);
                     float scale = (float) (distance/mStartDistance);
-                    mImgView.setScaleX(mLastScale*scale);
-                    mImgView.setScaleY(mLastScale*scale);
+                    PointF middle = calculateMiddlePoint(mLastPoint, point);
+                    mMatrix.reset();
+                    mMatrix.set(mCurrentMatrix);
+                    mMatrix.postScale(scale, scale, middle.x, middle.y);
+                    mImgView.setImageMatrix(mMatrix);
                 } else if (mActionMode == ActionMode.DRAG) {
-                    int deltaX = x - mLastX;
-                    int deltaY = y - mLastY;
-                    scrollBy(-deltaX, -deltaY);
+                    double distance = Math.hypot(mDragDistanceX, mDragDistanceY);
+                    if (distance > mTouchSlop) {
+                        mMatrix.set(mCurrentMatrix);
+                        mMatrix.postTranslate(mDragDistanceX, mDragDistanceY);
+                        mImgView.setImageMatrix(mMatrix);
+                    }
                     if (mIsNormal) {
                         float friction = Math.abs(mDragDistanceY)*2.0f/ScreenUtil.getScreenHeight(getContext());
                         ArgbEvaluator evaluator = new ArgbEvaluator();
                         int color = (int) evaluator.evaluate(Math.min(friction, 1.0f), BG_COLOR_DEFAULT, BG_COLOR_TRANSPARENT);
-                        setBackgroundColor(color);
+//                        setBackgroundColor(color);
                     }
                 }
-                mLastX = x;
-                mLastY = y;
+                mLastPoint = point;
                 break;
             case MotionEvent.ACTION_UP:
                 mActionMode = ActionMode.IDLE;
                 mVelocityTracker.computeCurrentVelocity(1000);
-                int vx = (int) (mVelocityTracker.getXVelocity() + 0.5f);
-                int vy = (int) (mVelocityTracker.getYVelocity() + 0.5f);
                 int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY); // 拖动距离
                 Direction direction = calculateDirection();
-                if (Math.abs(vx) > mMinVelocity || Math.abs(vy) > mMinVelocity) {
-                    mScroller.fling(getScrollX(), getScrollY(), -vx, -vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                    invalidate();
-                }
-                if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {
-                    zoomToNormal();
-                } else if (mIsNormal && direction == Direction.DOWN && distance > DISTANCE_TRIGGER_DISMISS) {
-                    dismiss();
-                }
+//                if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {
+//                    zoomToNormal();
+//                } else if (mIsNormal && direction == Direction.DOWN && distance > DISTANCE_TRIGGER_DISMISS) {
+//                    dismiss();
+//                }
                 break;
         }
-        mImgView.setImageMatrix(mMatrix);
         mDetector.onTouchEvent(event);
         return true;
+    }
+
+    private PointF calculateMiddlePoint(PointF first, PointF second) {
+        return new PointF((first.x+second.x)/2, (first.y+second.y)/2);
     }
 
     private Direction calculateDirection() {
@@ -423,6 +454,6 @@ public class ImageViewer extends LinearLayout {
     }
 
     public interface OnDragListener {
-        void onDrag(int distanceX, int distanceY);
+        void onDrag(float distanceX, float distanceY);
     }
 }

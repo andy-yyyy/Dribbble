@@ -308,8 +308,16 @@ public class ImageViewer extends LinearLayout {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
             mMatrix.set(mCurrentMatrix);
-            mMatrix.postTranslate(mScroller.getCurrX()-MatrixUtil.getMatrixTranslateX(mCurrentMatrix), mScroller.getCurrY()-MatrixUtil.getMatrixTranslateY(mCurrentMatrix));
-            mImgView.setImageMatrix(mMatrix);
+            float translateX = mScroller.getCurrX();
+            float translateY = mScroller.getCurrY();
+            float lastTranslateX = MatrixUtil.getMatrixTranslateX(mCurrentMatrix);
+            float lastTranslateY = MatrixUtil.getMatrixTranslateY(mCurrentMatrix);
+            Log.d(TAG, "fling translateX: "+translateX+"; translateY: "+translateY);
+
+            if (getScrollBound().contains(translateX, translateY)) {
+                mMatrix.postTranslate(translateX-lastTranslateX, translateY-lastTranslateY);
+                mImgView.setImageMatrix(mMatrix);
+            }
             invalidate();
         }
     }
@@ -362,7 +370,9 @@ public class ImageViewer extends LinearLayout {
                     mImgView.setImageMatrix(mMatrix);
                 } else if (mActionMode == ActionMode.DRAG) {
                     double distance = Math.hypot(mDragDistanceX, mDragDistanceY);
-                    if (distance > mTouchSlop) {
+                    float translateX = MatrixUtil.getMatrixTranslateX(mMatrix);
+                    float translateY = MatrixUtil.getMatrixTranslateY(mMatrix);
+                    if (distance > mTouchSlop && getScrollBound().contains(translateX, translateY)) {
                         mMatrix.set(mCurrentMatrix);
                         mMatrix.postTranslate(mDragDistanceX, mDragDistanceY);
                         mImgView.setImageMatrix(mMatrix);
@@ -397,6 +407,25 @@ public class ImageViewer extends LinearLayout {
         }
         mDetector.onTouchEvent(event);
         return true;
+    }
+
+    /**
+     * 图片滑动的边界
+     * @return
+     */
+    private RectF getScrollBound() {
+        float imgWidth = 0;
+        float imgHeight = 0;
+        float scale = MatrixUtil.getMatrixScaleX(mMatrix);
+        if (mDrawableSrc != null) {
+            imgWidth = mDrawableSrc.getIntrinsicWidth()*scale;
+            imgHeight = mDrawableSrc.getIntrinsicHeight()*scale;
+        }
+        float left = -imgWidth;
+        float top = -imgHeight;
+        float right = ScreenUtil.getScreenWidth(getContext());
+        float bottom = ScreenUtil.getScreenHeight(getContext();
+        return new RectF(left, top, right, bottom);
     }
 
     private PointF calculateMiddlePoint(PointF first, PointF second) {

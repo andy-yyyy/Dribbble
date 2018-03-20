@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
+import com.andy.dribbble.MatrixUtil;
 import com.andy.dribbble.common_utils.ScreenUtil;
 
 /**
@@ -72,9 +73,9 @@ public class ImageViewer extends LinearLayout {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             if (mIsNormal) {
-                zoomToMax();
+//                zoomToMax();
             } else {
-                zoomToNormal();
+//                zoomToNormal();
             }
             return true;
         }
@@ -91,6 +92,7 @@ public class ImageViewer extends LinearLayout {
                 int vy = (int) (mVelocityTracker.getYVelocity() + 0.5f);
                 mScroller.fling(translateX, translateY, vx, vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 invalidate();
+//                mCurrentMatrix.set(mImgView.getImageMatrix());
 //                    Log.d("aaa", "vx---> "+vx+"; vy---> "+vy);
 //                    Log.d("aaa", "start x---> "+translateX+"; y--->"+translateY);
             }
@@ -151,8 +153,11 @@ public class ImageViewer extends LinearLayout {
 
 
     protected void zoomToMax() {
-        zoom(2.0f);
-        mIsNormal = false;
+//        zoom(2.0f);
+//        mIsNormal = false;
+        mMatrix.set(mCurrentMatrix);
+        mMatrix.postTranslate(100, 100);
+        mImgView.setImageMatrix(mMatrix);
     }
 
     protected void zoomToNormal() {
@@ -319,12 +324,10 @@ public class ImageViewer extends LinearLayout {
     public void computeScroll() {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
-            Matrix matrix = new Matrix();
-            matrix.postTranslate(mScroller.getCurrX(), mScroller.getCurrY());
-            mImgView.setImageMatrix(matrix);
+            mMatrix.set(mCurrentMatrix);
+            mMatrix.postTranslate(mScroller.getCurrX()-MatrixUtil.getMatrixTranslateX(mCurrentMatrix), mScroller.getCurrY()-MatrixUtil.getMatrixTranslateY(mCurrentMatrix));
+            mImgView.setImageMatrix(mMatrix);
             invalidate();
-        } else {
-            mCurrentMatrix.set(mImgView.getImageMatrix());
         }
     }
 
@@ -351,6 +354,7 @@ public class ImageViewer extends LinearLayout {
             case MotionEvent.ACTION_POINTER_UP:
                 mActionMode = ActionMode.DRAG;
                 mCurrentMatrix.set(mImgView.getImageMatrix());
+                // 找到未抬起的手指
                 int index = 0;
                 for (int i=0; i < event.getPointerCount(); i ++) {
                     if (i != event.getActionIndex()) {
@@ -369,7 +373,6 @@ public class ImageViewer extends LinearLayout {
                     double distance = calculateDistance(event);
                     float scale = (float) (distance/mStartDistance);
                     PointF middle = calculateMiddlePoint(mLastPoint, point);
-                    mMatrix.reset();
                     mMatrix.set(mCurrentMatrix);
                     mMatrix.postScale(scale, scale, middle.x, middle.y);
                     mImgView.setImageMatrix(mMatrix);
@@ -392,6 +395,7 @@ public class ImageViewer extends LinearLayout {
             case MotionEvent.ACTION_UP:
                 mActionMode = ActionMode.IDLE;
                 mVelocityTracker.computeCurrentVelocity(1000);
+                mCurrentMatrix.set(mImgView.getImageMatrix());
                 int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY); // 拖动距离
                 Direction direction = calculateDirection();
 //                if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {

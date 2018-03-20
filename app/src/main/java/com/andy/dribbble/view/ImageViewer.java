@@ -177,12 +177,12 @@ public class ImageViewer extends LinearLayout {
     }
 
     protected void zoomToDefault(PointF pivot) {
-        zoom(MatrixUtil.getMatrixScaleX(mMatrix), SCALE_RATIO_DEFAULT, pivot);
+        zoom(MatrixUtil.getMatrixScaleX(mMatrix), MatrixUtil.getMatrixScaleX(mInitMatrix)*SCALE_RATIO_DEFAULT, pivot);
         mIsNormal = false;
     }
 
     protected void zoomToInit(PointF pivot) {
-        zoom(MatrixUtil.getMatrixScaleX(mMatrix), SCALE_RATIO_INIT, pivot);
+        zoom(MatrixUtil.getMatrixScaleX(mMatrix), MatrixUtil.getMatrixScaleX(mInitMatrix), pivot);
         mIsNormal = true;
     }
 

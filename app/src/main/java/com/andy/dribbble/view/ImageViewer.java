@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -35,9 +36,14 @@ import com.andy.dribbble.common_utils.ScreenUtil;
 
 public class ImageViewer extends LinearLayout {
 
+    public static final int ANIM_DURATION_DEFAULT = 300;
     public static final int BG_COLOR_DEFAULT = 0xdd000000;
     public static final int BG_COLOR_TRANSPARENT = 0x00000000;
     public static final int DISTANCE_TRIGGER_DISMISS = 200;
+    public static final float SCALE_RATIO_DEFAULT = 2.0f;  // 双击时默认的缩放比例
+    public static final float SCALE_RATIO_INIT = 1.0f;
+    public static final float SCALE_RATIO_MIN = 0.1f;
+    public static final float SCALE_RATIO_MAX = 10.0f;
     private ImageView mImgView;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
@@ -47,6 +53,7 @@ public class ImageViewer extends LinearLayout {
     private Direction mDirection;
     private Matrix mMatrix = new Matrix();
     private Matrix mCurrentMatrix = new Matrix();
+    private Matrix mInitMatrix = new Matrix(); // 初始状态的Matrix
     private PointF mDownPoint;  // 手指按下的点
     private PointF mLastPoint;  // 上次触摸的点
     private PointF mMiddlePoint;   // 双指缩放时的中点
@@ -55,7 +62,6 @@ public class ImageViewer extends LinearLayout {
     private int mMinVelocity;
     private float mDragDistanceX;
     private float mDragDistanceY;
-    private float mLastScale;
     private double mStartDistance;
     private boolean mShowing;
     private boolean mIsNormal;
@@ -72,10 +78,11 @@ public class ImageViewer extends LinearLayout {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            PointF pivot = new PointF(e.getX(), e.getY());
             if (mIsNormal) {
-//                zoomToMax();
+                zoomToDefault(pivot);
             } else {
-//                zoomToNormal();
+                animateToInit(pivot);
             }
             return true;
         }
@@ -84,20 +91,24 @@ public class ImageViewer extends LinearLayout {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (Math.abs(velocityX) > mMinVelocity || Math.abs(velocityY) > mMinVelocity) {
                 Matrix m = mImgView.getImageMatrix();
-                float[] v = new float[9];
-                m.getValues(v);
-                int translateX = (int) (v[2]+0.5f);
-                int translateY = (int) (v[5]+0.5f);
-                int vx = (int) (mVelocityTracker.getXVelocity() + 0.5f);
-                int vy = (int) (mVelocityTracker.getYVelocity() + 0.5f);
-                mScroller.fling(translateX, translateY, vx, vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                invalidate();
-//                mCurrentMatrix.set(mImgView.getImageMatrix());
-//                    Log.d("aaa", "vx---> "+vx+"; vy---> "+vy);
-//                    Log.d("aaa", "start x---> "+translateX+"; y--->"+translateY);
+                int translateX = (int) (MatrixUtil.getMatrixTranslateX(m)+05f);
+                int translateY = (int) (MatrixUtil.getMatrixTranslateY(m)+0.5f);
+                int vx = (int) (velocityX + 0.5f);
+                int vy = (int) (velocityY + 0.5f);
+                if (!mIsNormal) {
+                    mScroller.fling(translateX, translateY, vx, vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    invalidate();
+                } else if (vy > 0 && Math.abs(vy) > Math.abs(vx)) {
+                    mScroller.fling(translateX, translateY, vx, vy, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    invalidate();
+                    dismiss();
+                } else {
+                    animateToInit(null);
+                }
             }
             return true;
         }
+
     });
 
     private enum ActionMode {
@@ -145,39 +156,81 @@ public class ImageViewer extends LinearLayout {
             dismiss();
             return true;
         } else if (mShowing) {
-            zoomToNormal();
+            animateToInit(null);
             return true;
         }
         return false;
     }
 
-
-    protected void zoomToMax() {
-//        zoom(2.0f);
-//        mIsNormal = false;
-        mMatrix.set(mCurrentMatrix);
-        mMatrix.postTranslate(100, 100);
-        mImgView.setImageMatrix(mMatrix);
-    }
-
-    protected void zoomToNormal() {
-        zoom(1.0f);
-        ObjectAnimator.ofInt(this, "scrollX", getScrollX(), 0).setDuration(300).start();
-        ObjectAnimator.ofInt(this, "scrollY", getScrollY(), 0).setDuration(300).start();
+    private void animateToInit(PointF pivot) {
+        zoomToInit(pivot);
+        Matrix current = mImgView.getImageMatrix();
+        PointF from = new PointF(MatrixUtil.getMatrixTranslateX(current), MatrixUtil.getMatrixTranslateY(current));
+        PointF to = new PointF(MatrixUtil.getMatrixTranslateX(mInitMatrix), MatrixUtil.getMatrixTranslateY(mInitMatrix));
+        translate(from, to);
         int currentBg = ((ColorDrawable) getBackground().mutate()).getColor();
         if (getBackground() instanceof ColorDrawable && currentBg != BG_COLOR_DEFAULT) {
-            ObjectAnimator.ofObject(this, "backgroundColor", new ArgbEvaluator(), currentBg, BG_COLOR_DEFAULT).setDuration(300).start();
+            ObjectAnimator.ofObject(this, "backgroundColor", new ArgbEvaluator(), currentBg, BG_COLOR_DEFAULT).setDuration(ANIM_DURATION_DEFAULT).start();
         }
+    }
+
+    protected void zoomToDefault(PointF pivot) {
+        zoom(MatrixUtil.getMatrixScaleX(mMatrix), SCALE_RATIO_DEFAULT, pivot);
+        mIsNormal = false;
+    }
+
+    protected void zoomToInit(PointF pivot) {
+        zoom(MatrixUtil.getMatrixScaleX(mMatrix), SCALE_RATIO_INIT, pivot);
         mIsNormal = true;
     }
 
-    protected void zoom(float target) {
-        ObjectAnimator.ofFloat(mImgView, "scaleX", mImgView.getScaleX(), target).setDuration(300).start();
-        ObjectAnimator.ofFloat(mImgView, "scaleY", mImgView.getScaleY(), target).setDuration(300).start();
+    protected void zoom(final float scaleFrom, final float scaleTo, final PointF pivot) {
+        if (scaleFrom == 0 || scaleTo == 0) {
+            throw new IllegalArgumentException("缩放系数不能为0");
+        }
+        mMatrix.set(mImgView.getImageMatrix());
+        ValueAnimator animator = ValueAnimator.ofFloat(0, 1.0f).setDuration(ANIM_DURATION_DEFAULT);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float friction = (float) animation.getAnimatedValue();
+                float target = scaleFrom+(scaleTo - scaleFrom)*friction;
+                float lastScale = MatrixUtil.getMatrixScaleX(mMatrix);
+                float multiple = target/Math.max(lastScale, SCALE_RATIO_MIN);  // 增加的倍数，防止除数为0
+                if (pivot == null) {
+                    mMatrix.postScale(multiple, multiple);
+                } else {
+                    mMatrix.postScale(multiple, multiple, pivot.x, pivot.y);
+                }
+                mImgView.setImageMatrix(mMatrix);
+            }
+        });
+        animator.start();
+    }
+
+    private void translate(final PointF from, final PointF to) {
+        if (from == null || to == null) {
+            return;
+        }
+        mMatrix.set(mImgView.getImageMatrix());
+        ValueAnimator animator = ValueAnimator.ofFloat(0, 1.0f).setDuration(ANIM_DURATION_DEFAULT);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float friction = (float) animation.getAnimatedValue();
+                float targetX = from.x + (to.x-from.x)*friction;
+                float targetY = from.y + (to.y-from.y)*friction;
+                float lastX = MatrixUtil.getMatrixTranslateX(mImgView.getImageMatrix());
+                float lastY = MatrixUtil.getMatrixTranslateY(mImgView.getImageMatrix());
+                mMatrix.postTranslate(targetX - lastX, targetY - lastY);
+                mImgView.setImageMatrix(mMatrix);
+            }
+        });
+        animator.start();
     }
 
     protected void dismiss() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(ImageViewer.this, "alpha", getAlpha(), 0).setDuration(300);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(ImageViewer.this, "alpha", getAlpha(), 0).setDuration(ANIM_DURATION_DEFAULT);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -204,37 +257,34 @@ public class ImageViewer extends LinearLayout {
         }
         if (mImgView == null) {
             mImgView = new ImageView(getContext());
-            mImgView.setScaleType(ImageView.ScaleType.MATRIX);
-            mLastScale = mImgView.getScaleX();
-            mIsNormal = true;
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
-        } else {
-            reset();  // 再次进入时重置视图
         }
+        initImgView();
+        setBackgroundColor(BG_COLOR_DEFAULT);
         if (mImgSrc != null) {
             mImgView.setImageDrawable(mImgSrc.getDrawable());
         }
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(300).start();
+                ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(ANIM_DURATION_DEFAULT).start();
             }
         }, 200);
     }
 
-    /**
-     * 恢复初始状态
-     */
-    private void reset() {
-        setBackgroundColor(BG_COLOR_DEFAULT);
-        if (getScrollX() != 0 || getScrollY() != 0) {
-            scrollTo(0, 0);
-        }
-        if (mImgView.getScaleX() != 1 || mImgView.getScaleY() != 1) {
-            mImgView.setScaleX(1.0f);
-            mImgView.setScaleY(1.0f);
-        }
+    private void initImgView() {
+        mImgView.setScaleType(ImageView.ScaleType.MATRIX);
+        mIsNormal = true;
+        mMatrix.setScale(1.0f, 1.0f);
+        Drawable d = mImgSrc.getDrawable();
+        RectF src = new RectF(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        RectF dst = new RectF(0, 0, ScreenUtil.getScreenWidth(getContext()), ScreenUtil.getScreenHeight(getContext()));
+
+        mMatrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER);
+        mImgView.setImageMatrix(mMatrix);
+        mInitMatrix.set(mMatrix);
+        Log.d("aaa", "init img matrix "+MatrixUtil.toString(mInitMatrix));
     }
 
     private void initImgBounds() {
@@ -348,7 +398,6 @@ public class ImageViewer extends LinearLayout {
             case MotionEvent.ACTION_POINTER_DOWN:
                 mActionMode = ActionMode.ZOOM;
                 mStartDistance = calculateDistance(event);
-                mLastScale = mImgView.getScaleX();
                 mMiddlePoint = calculateMiddlePoint(mLastPoint, point);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -383,11 +432,11 @@ public class ImageViewer extends LinearLayout {
                         mMatrix.postTranslate(mDragDistanceX, mDragDistanceY);
                         mImgView.setImageMatrix(mMatrix);
                     }
-                    if (mIsNormal) {
+                    if (mIsNormal && mDragDistanceY > 0) {
                         float friction = Math.abs(mDragDistanceY)*2.0f/ScreenUtil.getScreenHeight(getContext());
                         ArgbEvaluator evaluator = new ArgbEvaluator();
                         int color = (int) evaluator.evaluate(Math.min(friction, 1.0f), BG_COLOR_DEFAULT, BG_COLOR_TRANSPARENT);
-//                        setBackgroundColor(color);
+                        setBackgroundColor(color);
                     }
                 }
                 mLastPoint = point;
@@ -396,13 +445,14 @@ public class ImageViewer extends LinearLayout {
                 mActionMode = ActionMode.IDLE;
                 mVelocityTracker.computeCurrentVelocity(1000);
                 mCurrentMatrix.set(mImgView.getImageMatrix());
-                int distance = (int) Math.sqrt(mDragDistanceX*mDragDistanceX + mDragDistanceY*mDragDistanceY); // 拖动距离
+                int distance = (int) Math.hypot(mDragDistanceX , mDragDistanceY); // 拖动距离
+                float velocityY = mVelocityTracker.getYVelocity();
                 Direction direction = calculateDirection();
-//                if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {
-//                    zoomToNormal();
-//                } else if (mIsNormal && direction == Direction.DOWN && distance > DISTANCE_TRIGGER_DISMISS) {
-//                    dismiss();
-//                }
+                if (mIsNormal && distance > mTouchSlop && (distance < DISTANCE_TRIGGER_DISMISS || direction != Direction.DOWN)) {
+                    animateToInit(null);
+                } else if (mIsNormal && direction == Direction.DOWN && (Math.abs(velocityY) > mMinVelocity || distance > DISTANCE_TRIGGER_DISMISS)) {
+                    dismiss();
+                }
                 break;
         }
         mDetector.onTouchEvent(event);

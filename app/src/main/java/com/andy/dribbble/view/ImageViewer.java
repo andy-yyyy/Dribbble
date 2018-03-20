@@ -36,6 +36,7 @@ import com.andy.dribbble.common_utils.ScreenUtil;
 
 public class ImageViewer extends LinearLayout {
 
+    public final String TAG = getClass().getSimpleName();
     public static final int ANIM_DURATION_DEFAULT = 300;
     public static final int BG_COLOR_DEFAULT = 0xdd000000;
     public static final int BG_COLOR_TRANSPARENT = 0x00000000;
@@ -49,6 +50,7 @@ public class ImageViewer extends LinearLayout {
     private VelocityTracker mVelocityTracker;
     private int mImgRes;
     private ImageView mImgSrc;
+    private Drawable mDrawableSrc;
     private ActionMode mActionMode;
     private Direction mDirection;
     private Matrix mMatrix = new Matrix();
@@ -246,128 +248,59 @@ public class ImageViewer extends LinearLayout {
     }
 
     public void show(Activity context, final ImageView src) {
+        if (context == null) {
+            throw new IllegalArgumentException("需要传入图片所在的Activity");
+        }
+        if (src == null) {
+            throw new IllegalArgumentException("ImageView不能为null");
+        }
         mShowing = true;
         mImgSrc = src;
+        mDrawableSrc = src.getDrawable();  // 获取源ImageView的Drawable，此处可能为null
         Rect r = new Rect();
-        src.getGlobalVisibleRect(r);
-        Log.d("aaa", "rect: "+r);
+        mImgSrc.getGlobalVisibleRect(r);
+        Log.d(TAG, "image view bounds: "+r);
         ViewGroup decor = (ViewGroup) context.getWindow().getDecorView();
         if (getParent() == null) {
             decor.addView(this);
         }
-        if (mImgView == null) {
-            mImgView = new ImageView(getContext());
-            ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            addView(mImgView, lp);
-        }
         initImgView();
         setBackgroundColor(BG_COLOR_DEFAULT);
-        if (mImgSrc != null) {
-            mImgView.setImageDrawable(mImgSrc.getDrawable());
-        }
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 ObjectAnimator.ofFloat(ImageViewer.this, "alpha", 0, 1.0f).setDuration(ANIM_DURATION_DEFAULT).start();
             }
-        }, 200);
+        }, ANIM_DURATION_DEFAULT);
     }
 
     private void initImgView() {
-        mImgView.setScaleType(ImageView.ScaleType.MATRIX);
-        mIsNormal = true;
-        mMatrix.setScale(1.0f, 1.0f);
-        Drawable d = mImgSrc.getDrawable();
-        RectF src = new RectF(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-        RectF dst = new RectF(0, 0, ScreenUtil.getScreenWidth(getContext()), ScreenUtil.getScreenHeight(getContext()));
-
-        mMatrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER);
-        mImgView.setImageMatrix(mMatrix);
-        mInitMatrix.set(mMatrix);
-        Log.d("aaa", "init img matrix "+MatrixUtil.toString(mInitMatrix));
-    }
-
-    private void initImgBounds() {
-        Drawable d = mImgView.getDrawable();
-        final int dwidth = d.getIntrinsicWidth();
-        final int dheight = d.getIntrinsicHeight();
-        final int vwidth = getWidth();
-        final int vheight = getHeight();
-        float dx = 0;
-        float dy = 0;
-        float scale = 1.0f;
-        if (dwidth * vheight > vwidth * dheight) {
-            scale = (float) vheight / (float) dheight;
-            dx = (vwidth - dwidth * scale) * 0.5f;
-        } else {
-            scale = (float) vwidth / (float) dwidth;
-            dy = (vheight - dheight * scale) * 0.5f;
+        if (mImgView == null) {
+            mImgView = new ImageView(getContext());
+            ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            addView(mImgView, lp);
         }
-        Matrix m = new Matrix();
-        m.set(mImgView.getImageMatrix());
-        m.setScale(scale, scale);
-        m.postTranslate(dx, dy);
-        mImgView.setImageMatrix(m);
-    }
-
-    private void animateView(Rect bound) {
-        final Rect rect = bound;
-        final  ViewGroup.LayoutParams lp = mImgView.getLayoutParams();
-        final float screenWidth = ScreenUtil.getScreenWidth(getContext());
-        final float screenHeight = ScreenUtil.getScreenHeight(getContext());
-        final int oldWidth = lp.width;
-        final int oldHeight = lp.height;
-        final int oldLeft = mImgView.getLeft();
-        final int oldTop = mImgView.getTop();
-        final int oldRight = mImgView.getRight();
-        final int oldBottom = mImgView.getBottom();
-        final float oldScaleX = mImgView.getScaleX();
-        final float oldScaleY = mImgView.getScaleY();
-        Drawable drawable = mImgView.getDrawable();
-//        mImgView.setScaleType(ImageView.ScaleType.MATRIX);
-//        mImgView.setImageResource(R.mipmap.mm);
-//        mImgView.getImageMatrix().setScale(1.0f, -1.0f);
-        final int width = drawable.getIntrinsicWidth();
-        final int height = drawable.getIntrinsicHeight();
-        float v = screenWidth/width;
-        float h = screenHeight/height;
-        final float scale = Math.min(v, h);
-        ValueAnimator animator = ObjectAnimator.ofFloat(0, 1.0f).setDuration(3000);
-        ObjectAnimator.ofFloat(this, "alpha", 0, 1.0f).setDuration(1000).start();
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float per = (float) animation.getAnimatedValue();
-            }
-        });
-        animator.start();
-    }
-
-    private int calculateTranslationX(Rect r) {
-        float w = r.right - r.left;
-        float screenWidth = ScreenUtil.getScreenWidth(getContext());
-        return (int) (screenWidth/2 - w/2 - r.left+0.5f);
-    }
-
-    private int calculateTranslationY(Rect r) {
-        float h = r.bottom - r.top;
-        float screenHeight = ScreenUtil.getScreenHeight(getContext());
-        return (int) (screenHeight/2 - h/2 - r.left+0.5f);
+        Drawable d = mDrawableSrc;
+        if (d != null) {
+            mImgView.setImageDrawable(d);
+            mImgView.setScaleType(ImageView.ScaleType.MATRIX);
+            RectF src = new RectF(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());  // 图片本身的范围
+            RectF dst = new RectF(0, 0, ScreenUtil.getScreenWidth(getContext()), ScreenUtil.getScreenHeight(getContext())); // ImageView的大小
+            mMatrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER);
+            mImgView.setImageMatrix(mMatrix);
+            mInitMatrix.set(mMatrix);
+        }
+        mIsNormal = true;
+        Log.d(TAG, "init img matrix "+MatrixUtil.toString(mInitMatrix));
     }
 
     public ImageView getImgView() {
         return mImgView;
     }
 
-    public void setImgRes(int res) {
-        mImgView.setImageResource(res);
-        invalidate();
-    }
-
-
-
-    public void setImgFrame(Rect r) {
-        requestLayout();
+    public void setImgDrawable(Drawable d) {
+        mDrawableSrc = d;
+        initImgView();
     }
 
     @Override
@@ -413,6 +346,8 @@ public class ImageViewer extends LinearLayout {
                 mDownPoint = new PointF(event.getX(index), event.getY(index));
                 break;
             case MotionEvent.ACTION_MOVE:
+                Drawable d = mImgView.getDrawable();
+//                Log.d(TAG, "img width: "+d.getIntrinsicWidth()+"; height: "+d.getIntrinsicHeight());
                 mDragDistanceX = point.x - mDownPoint.x;
                 mDragDistanceY = point.y - mDownPoint.y;
                 if (mDragListener != null) {

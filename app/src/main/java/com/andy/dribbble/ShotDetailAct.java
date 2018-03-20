@@ -2,6 +2,7 @@ package com.andy.dribbble;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -15,9 +16,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.andy.dribbble.beans.ShotInfo;
-import com.andy.dribbble.common_utils.ToastUtil;
 import com.andy.dribbble.view.ImageViewer;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 /**
  * Created by andy on 2016/12/11.
@@ -91,7 +94,15 @@ public class ShotDetailAct extends BaseActivity {
         if (mShotInfo != null) {
             mCommentsFrag = CommentsListFrag.getInstance(mShotInfo.getId());
             toolbar.setTitle(mShotInfo.getTitle());
-            Glide.with(this).load(mShotInfo.getImages().getNormal()).into(imageView);
+            Glide.with(this).load(mShotInfo.getImages().getNormal()).into(new SimpleTarget<GlideDrawable>() {
+                @Override
+                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                    Drawable d = resource.getCurrent();
+                    imageView.setImageDrawable(d);
+                    mScaleImageView.setImgDrawable(d);
+                    Log.d(TAG, "src img width: "+d.getIntrinsicWidth()+"; height: "+d.getIntrinsicHeight());
+                }
+            });
             ft.replace(R.id.header_container, ShotDetailFrag.getInstance(mShotInfo));
             ft.replace(R.id.list_container, mCommentsFrag).commitAllowingStateLoss();
         }
@@ -108,7 +119,6 @@ public class ShotDetailAct extends BaseActivity {
                     if (mCommentsFrag != null) {
                         mCommentsFrag.onLoadMore();
                     }
-                    Log.d("aaa", "scrollY "+scrollY);
                 }
             }
         });

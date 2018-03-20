@@ -369,6 +369,11 @@ public class ImageViewer extends LinearLayout {
                     }
                     if (mIsNormal && mDragDistanceY > 0) {
                         float friction = Math.abs(mDragDistanceY)*2.0f/ScreenUtil.getScreenHeight(getContext());
+                        float scale = 1 - Math.min(friction, 1);
+                        mMatrix.set(mCurrentMatrix);
+                        mMatrix.postScale(scale, scale, point.x, point.y);
+                        mMatrix.postTranslate(mDragDistanceX, mDragDistanceY);
+                        mImgView.setImageMatrix(mMatrix);
                         ArgbEvaluator evaluator = new ArgbEvaluator();
                         int color = (int) evaluator.evaluate(Math.min(friction, 1.0f), BG_COLOR_DEFAULT, BG_COLOR_TRANSPARENT);
                         setBackgroundColor(color);

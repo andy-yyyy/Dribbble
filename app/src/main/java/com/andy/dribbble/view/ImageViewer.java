@@ -37,6 +37,8 @@ import com.andy.dribbble.common_utils.ScreenUtil;
 public class ImageViewer extends LinearLayout {
 
     public final String TAG = getClass().getSimpleName();
+    public static final int REBOUND_REFERENCE_VELOCITY = 5000;
+    public static final int REBOUND_REFERENCE_DISTANCE = 200;
     public static final int ANIM_DURATION_DEFAULT = 300;
     public static final int BG_COLOR_DEFAULT = 0xdd000000;
     public static final int BG_COLOR_TRANSPARENT = 0x00000000;
@@ -64,9 +66,12 @@ public class ImageViewer extends LinearLayout {
     private int mMinVelocity;
     private float mDragDistanceX;
     private float mDragDistanceY;
+    private float mCrossBorderX;  // fling时超出边界的值（此值由到达边界时的速度决定，速度越大，越界值越大）
+    private float mCrossBorderY;  // fling时超出边界的值（此值由到达边界时的速度决定，速度越大，越界值越大）
     private double mStartDistance;
     private boolean mShowing;
     private boolean mIsNormal;
+    private boolean mIsRebound; // 是否在执行回弹效果
 
     private GestureDetector mDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
@@ -307,18 +312,37 @@ public class ImageViewer extends LinearLayout {
     public void computeScroll() {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
-            mMatrix.set(mCurrentMatrix);
             float translateX = mScroller.getCurrX();
             float translateY = mScroller.getCurrY();
             float lastTranslateX = MatrixUtil.getMatrixTranslateX(mCurrentMatrix);
             float lastTranslateY = MatrixUtil.getMatrixTranslateY(mCurrentMatrix);
-            Log.d(TAG, "fling translateX: "+translateX+"; translateY: "+translateY);
-
-            if (getScrollBound().contains(translateX, translateY)) {
+            if (mIsRebound) {
+                // 反弹
                 mMatrix.postTranslate(translateX-lastTranslateX, translateY-lastTranslateY);
                 mImgView.setImageMatrix(mMatrix);
             }
+            mMatrix.set(mCurrentMatrix);
+            Log.d(TAG, "fling translateX: "+translateX+"; translateY: "+translateY+"; velocity: "+mScroller.getCurrVelocity());
+            if (getScrollBound().contains(translateX, translateY)) {
+                mMatrix.postTranslate(translateX-lastTranslateX, translateY-lastTranslateY);
+                mImgView.setImageMatrix(mMatrix);
+            } else { // 超出边界，触发反弹效果
+                float v = mScroller.getCurrVelocity();
+                float deltaX = translateX - lastTranslateX;
+                float deltaY = translateY - lastTranslateY;
+                double delta = Math.hypot(deltaX, deltaY);
+                double vx = v*deltaX/delta;  // x方向的速度
+                double vy = v*deltaY/delta;  // y方向的速度
+                float friction = mScroller.getCurrVelocity() / REBOUND_REFERENCE_VELOCITY;
+                mCrossBorderX = (float) (vx*REBOUND_REFERENCE_DISTANCE/REBOUND_REFERENCE_VELOCITY);
+                mCrossBorderY = (float) (vy*REBOUND_REFERENCE_DISTANCE/REBOUND_REFERENCE_VELOCITY);
+                Log.d(TAG, "trigger rebound. friction: "+friction+"; vx: "+vx+"; vy: "+vy);
+                mScroller.startScroll((int)translateX, (int)translateY, -(int)mCrossBorderX, -(int)mCrossBorderY, ANIM_DURATION_DEFAULT*2);
+                mIsRebound = true;
+            }
             invalidate();
+        } else {
+            mIsRebound = false;
         }
     }
 
@@ -354,8 +378,6 @@ public class ImageViewer extends LinearLayout {
                 mDownPoint = new PointF(event.getX(index), event.getY(index));
                 break;
             case MotionEvent.ACTION_MOVE:
-                Drawable d = mImgView.getDrawable();
-//                Log.d(TAG, "img width: "+d.getIntrinsicWidth()+"; height: "+d.getIntrinsicHeight());
                 mDragDistanceX = point.x - mDownPoint.x;
                 mDragDistanceY = point.y - mDownPoint.y;
                 if (mDragListener != null) {
@@ -414,6 +436,8 @@ public class ImageViewer extends LinearLayout {
      * @return
      */
     private RectF getScrollBound() {
+        float screenWidth = ScreenUtil.getScreenWidth(getContext());
+        float screenHeight = ScreenUtil.getScreenHeight(getContext());
         float imgWidth = 0;
         float imgHeight = 0;
         float scale = MatrixUtil.getMatrixScaleX(mMatrix);
@@ -421,11 +445,22 @@ public class ImageViewer extends LinearLayout {
             imgWidth = mDrawableSrc.getIntrinsicWidth()*scale;
             imgHeight = mDrawableSrc.getIntrinsicHeight()*scale;
         }
-        float left = -imgWidth;
-        float top = -imgHeight;
-        float right = ScreenUtil.getScreenWidth(getContext());
-        float bottom = ScreenUtil.getScreenHeight(getContext();
+        float left = -(imgWidth - screenWidth/2);
+        float top = -(imgHeight - screenHeight/2);
+        float right = screenWidth/2;
+        float bottom = screenHeight/2;
         return new RectF(left, top, right, bottom);
+    }
+
+    /**
+     * 回弹时的边界
+     * @param r
+     * @param expandX
+     * @param expandY
+     * @return
+     */
+    private RectF getExpandBound(RectF r, float expandX, float expandY) {
+        return new RectF(r.left-expandX, r.top-expandY, r.right+expandX, r.bottom+expandY);
     }
 
     private PointF calculateMiddlePoint(PointF first, PointF second) {

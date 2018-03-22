@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -24,17 +25,19 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
+import android.widget.TextView;
 
 import com.andy.dribbble.MatrixUtil;
+import com.andy.dribbble.R;
 import com.andy.dribbble.common_utils.ScreenUtil;
 
 /**
  * Created by lixn on 2018/3/17.
  */
 
-public class ImageViewer extends LinearLayout {
+public class ImageViewer extends RelativeLayout {
 
     public final String TAG = getClass().getSimpleName();
     public static final int REBOUND_REFERENCE_VELOCITY = 5000;
@@ -49,6 +52,7 @@ public class ImageViewer extends LinearLayout {
     public static final float SCALE_RATIO_MAX = 10.0f;
     public static final float DRAG_FRICTION = 0.6f;
     private ImageView mImgView;
+    private LoadingButton mViewOrigin;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
     private int mImgRes;
@@ -151,7 +155,6 @@ public class ImageViewer extends LinearLayout {
     }
 
     private void initView(Context context) {
-        setOrientation(VERTICAL);
         setBackgroundColor(BG_COLOR_DEFAULT);
         setAlpha(0);
         mScroller = new Scroller(context);
@@ -285,6 +288,24 @@ public class ImageViewer extends LinearLayout {
             mImgView = new ImageView(getContext());
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
+        }
+        if (mViewOrigin == null) {
+            mViewOrigin = new LoadingButton(getContext());
+            mViewOrigin.setText("查看原图");
+            mViewOrigin.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mViewOrigin.showLoading(true);
+                }
+            });
+            mViewOrigin.getTextView().setTextColor(Color.parseColor("#efefef"));
+            mViewOrigin.getProgressBar().setBackgroundColor(Color.parseColor("#efefef"));
+            mViewOrigin.setBackgroundResource(R.drawable.bg_button_view_origin_picture);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.addRule(CENTER_HORIZONTAL);
+            lp.addRule(ALIGN_PARENT_BOTTOM);
+            lp.bottomMargin = 100;
+            addView(mViewOrigin, lp);
         }
         Drawable d = mDrawableSrc;
         if (d != null) {

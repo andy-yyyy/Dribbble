@@ -57,6 +57,14 @@ public class LoadingButton extends RelativeLayout {
         setBackgroundResource(resId);
     }
 
+    public TextView getTextView() {
+            return tv;
+    }
+
+    public ProgressBar getProgressBar() {
+        return pb;
+    }
+
     public void toggle(boolean toggleOn, String title) {
         setText(title);
         if (toggleOn) {

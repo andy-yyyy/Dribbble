@@ -47,6 +47,7 @@ public class ImageViewer extends LinearLayout {
     public static final float SCALE_RATIO_INIT = 1.0f;
     public static final float SCALE_RATIO_MIN = 0.1f;
     public static final float SCALE_RATIO_MAX = 10.0f;
+    public static final float DRAG_FRICTION = 0.6f;
     private ImageView mImgView;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
@@ -295,7 +296,12 @@ public class ImageViewer extends LinearLayout {
             mImgView.setImageMatrix(mMatrix);
             mInitMatrix.set(mMatrix);
         }
+        boolean finished = mScroller.isFinished();
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
         mIsNormal = true;
+        Log.d(TAG, "is scroll finished: "+finished);
         Log.d(TAG, "init img matrix "+MatrixUtil.toString(mInitMatrix));
     }
 
@@ -390,11 +396,12 @@ public class ImageViewer extends LinearLayout {
                     mMatrix.set(mCurrentMatrix);
                     mMatrix.postScale(scale, scale, middle.x, middle.y);
                     mImgView.setImageMatrix(mMatrix);
+                    mIsNormal = false;
                 } else if (mActionMode == ActionMode.DRAG) {
                     double distance = Math.hypot(mDragDistanceX, mDragDistanceY);
                     float translateX = MatrixUtil.getMatrixTranslateX(mMatrix);
                     float translateY = MatrixUtil.getMatrixTranslateY(mMatrix);
-                    if (distance > mTouchSlop && getScrollBound().contains(translateX, translateY)) {
+                    if (distance > mTouchSlop && (mIsNormal || getScrollBound().contains(translateX, translateY))) {
                         mMatrix.set(mCurrentMatrix);
                         mMatrix.postTranslate(mDragDistanceX, mDragDistanceY);
                         mImgView.setImageMatrix(mMatrix);

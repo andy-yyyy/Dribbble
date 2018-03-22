@@ -15,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -32,6 +33,11 @@ import android.widget.TextView;
 import com.andy.dribbble.MatrixUtil;
 import com.andy.dribbble.R;
 import com.andy.dribbble.common_utils.ScreenUtil;
+import com.andy.dribbble.common_utils.ToastUtil;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 /**
  * Created by lixn on 2018/3/17.
@@ -51,11 +57,11 @@ public class ImageViewer extends RelativeLayout {
     public static final float SCALE_RATIO_MIN = 0.1f;
     public static final float SCALE_RATIO_MAX = 10.0f;
     public static final float DRAG_FRICTION = 0.6f;
+    private Activity mActivity;
     private ImageView mImgView;
     private LoadingButton mViewOrigin;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
-    private int mImgRes;
     private ImageView mImgSrc;
     private Drawable mDrawableSrc;
     private ActionMode mActionMode;
@@ -65,7 +71,6 @@ public class ImageViewer extends RelativeLayout {
     private Matrix mInitMatrix = new Matrix(); // 初始状态的Matrix
     private PointF mDownPoint;  // 手指按下的点
     private PointF mLastPoint;  // 上次触摸的点
-    private PointF mMiddlePoint;   // 双指缩放时的中点
 
     private int mTouchSlop;
     private int mMinVelocity;
@@ -77,6 +82,7 @@ public class ImageViewer extends RelativeLayout {
     private boolean mShowing;
     private boolean mIsNormal;
     private boolean mIsRebound; // 是否在执行回弹效果
+    private String mOriginUrl;  // 原图地址
 
     private GestureDetector mDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
@@ -256,16 +262,18 @@ public class ImageViewer extends RelativeLayout {
         animator.start();
     }
 
-    public void show(Activity context, final ImageView src) {
+    public void show(Activity context, final ImageView src, String originUrl) {
         if (context == null) {
             throw new IllegalArgumentException("需要传入图片所在的Activity");
         }
         if (src == null) {
             throw new IllegalArgumentException("ImageView不能为null");
         }
+        mActivity = context;
         mShowing = true;
         mImgSrc = src;
         mDrawableSrc = src.getDrawable();  // 获取源ImageView的Drawable，此处可能为null
+        mOriginUrl = originUrl;
         Rect r = new Rect();
         mImgSrc.getGlobalVisibleRect(r);
         Log.d(TAG, "image view bounds: "+r);
@@ -289,17 +297,18 @@ public class ImageViewer extends RelativeLayout {
             ViewGroup.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mImgView, lp);
         }
-        if (mViewOrigin == null) {
+        if (mViewOrigin == null && !TextUtils.isEmpty(mOriginUrl)) {
             mViewOrigin = new LoadingButton(getContext());
             mViewOrigin.setText("查看原图");
             mViewOrigin.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mViewOrigin.showLoading(true);
+                    loadOriginPicture();
                 }
             });
             mViewOrigin.getTextView().setTextColor(Color.parseColor("#efefef"));
-            mViewOrigin.getProgressBar().setBackgroundColor(Color.parseColor("#efefef"));
+            mViewOrigin.getProgressBar().setDrawingCacheBackgroundColor(Color.parseColor("#efefef"));
             mViewOrigin.setBackgroundResource(R.drawable.bg_button_view_origin_picture);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.addRule(CENTER_HORIZONTAL);
@@ -307,6 +316,17 @@ public class ImageViewer extends RelativeLayout {
             lp.bottomMargin = 100;
             addView(mViewOrigin, lp);
         }
+        resetPictureSize();
+        boolean finished = mScroller.isFinished();
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
+        mIsNormal = true;
+        Log.d(TAG, "is scroll finished: "+finished);
+        Log.d(TAG, "init img matrix "+MatrixUtil.toString(mInitMatrix));
+    }
+
+    private void resetPictureSize() {
         Drawable d = mDrawableSrc;
         if (d != null) {
             mImgView.setImageDrawable(d);
@@ -317,13 +337,25 @@ public class ImageViewer extends RelativeLayout {
             mImgView.setImageMatrix(mMatrix);
             mInitMatrix.set(mMatrix);
         }
-        boolean finished = mScroller.isFinished();
-        if (!mScroller.isFinished()) {
-            mScroller.abortAnimation();
+    }
+
+    private void loadOriginPicture() {
+        if (TextUtils.isEmpty(mOriginUrl)) {
+            return;
         }
-        mIsNormal = true;
-        Log.d(TAG, "is scroll finished: "+finished);
-        Log.d(TAG, "init img matrix "+MatrixUtil.toString(mInitMatrix));
+        Glide.with(mActivity).load(mOriginUrl).into(new SimpleTarget<GlideDrawable>() {
+            @Override
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                Drawable result = resource.getCurrent();
+                if (result != null) {
+                    mViewOrigin.setVisibility(GONE);
+                    resetPictureSize();
+                } else {
+                    mViewOrigin.showLoading(false);
+                    ToastUtil.show("获取原图失败");
+                }
+            }
+        });
     }
 
     public ImageView getImgView() {
@@ -390,7 +422,6 @@ public class ImageViewer extends RelativeLayout {
             case MotionEvent.ACTION_POINTER_DOWN:
                 mActionMode = ActionMode.ZOOM;
                 mStartDistance = calculateDistance(event);
-                mMiddlePoint = calculateMiddlePoint(mLastPoint, point);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mActionMode = ActionMode.DRAG;

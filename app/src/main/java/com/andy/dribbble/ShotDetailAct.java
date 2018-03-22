@@ -82,7 +82,7 @@ public class ShotDetailAct extends BaseActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mScaleImageView.show(ShotDetailAct.this, imageView);
+                mScaleImageView.show(ShotDetailAct.this, imageView, mShotInfo != null ? mShotInfo.getImages().getHidp(): "");
             }
         });
         mScaleImageView = new ImageViewer(this);

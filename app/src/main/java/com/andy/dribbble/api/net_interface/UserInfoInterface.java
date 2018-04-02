@@ -13,10 +13,10 @@ import retrofit2.http.Query;
  */
 public interface UserInfoInterface {
 
-    @GET("v1/user")
+    @GET("v2/user")
     Call<UserInfo> getUserInfo(@Query("access_token") String token);
 
-    @PUT("v1/users/{user_id}/follow")
+    @PUT("v2/users/{user_id}/follow")
     Call<Object> follow(
             @Path("user_id") int userId,
             @Query("access_token") String token
